@@ -1,4 +1,4 @@
-package com.codepath.cityslicker.ui.dashboard;
+package com.codepath.cityslicker.ui.compose;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,24 +12,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.codepath.cityslicker.R;
-import com.codepath.cityslicker.databinding.FragmentDashboardBinding;
+import com.codepath.cityslicker.databinding.FragmentComposeBinding;
 
-public class DashboardFragment extends Fragment {
+public class ComposeFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
-    private FragmentDashboardBinding binding;
+    private ComposeViewModel composeViewModel;
+    private FragmentComposeBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        composeViewModel =
+                new ViewModelProvider(this).get(ComposeViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentComposeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        composeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
