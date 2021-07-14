@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient"
-    tools:context=".ui.LoginActivity">
+    android:animateLayoutChanges="true"
+    tools:context=".activities.LoginActivity">
 
     <EditText
         android:id="@+id/etUsername"
@@ -44,6 +45,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:backgroundTint="#53AEF8"
+        android:textColor="@color/white"
         android:elevation="30dp"
         android:text="Log In" />
 
@@ -55,6 +57,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="72dp"
         android:backgroundTint="#44A9FA"
+        android:textColor="@color/white"
         android:elevation="30dp"
         android:text="Sign Up" />
 
