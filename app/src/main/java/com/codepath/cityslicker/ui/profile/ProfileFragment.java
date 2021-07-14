@@ -54,7 +54,6 @@ public class ProfileFragment extends Fragment {
     private ViewPager2 viewPager2;
     private TabItem tabFriends;
     private TabItem tabTrips;
-    //private List<Trip> allTrips;
 
     private Bitmap bitmap;
 
@@ -64,23 +63,11 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-//        tabFriends = binding.tabFriends;
-//        tabTrips = binding.tabTrips;
         tvUpdatePP = binding.tvUpdatePP;
         tvUsername = binding.tvUsername;
         tabLayout = binding.tabLayout;
         viewPager2 = binding.viewPager;
         ivProfilePicture = binding.ivProfilePicture;
-
-//        profileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                // set text here?
-//            }
-//        });
-
-        //allTrips = new ArrayList<>();
-
 
         return root;
     }
@@ -104,14 +91,9 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    // Trigger gallery selection for a photo
     public void onPickPhoto(View view) {
-        // Create intent for picking a photo from the gallery
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
-        // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-            // Bring up gallery to select a photo
             startActivityForResult(intent, PICK_PHOTO_CODE);
         }
     }
@@ -119,13 +101,11 @@ public class ProfileFragment extends Fragment {
     public Bitmap loadFromUri(Uri photoUri) {
         Bitmap image = null;
         try {
-            // check version of Android on device
             if(Build.VERSION.SDK_INT > 27){
                 // on newer versions of Android, use the new decodeBitmap method
                 ImageDecoder.Source source = ImageDecoder.createSource(getContext().getContentResolver(), photoUri);
                 image = ImageDecoder.decodeBitmap(source);
             } else {
-                // support older versions of Android by using getBitmap
                 image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), photoUri);
             }
         } catch (IOException e) {
@@ -139,7 +119,6 @@ public class ProfileFragment extends Fragment {
         if ((data != null) && requestCode == PICK_PHOTO_CODE) {
             Uri photoUri = data.getData();
             bitmap = loadFromUri(photoUri);
-            //ivProfilePicture.setImageBitmap(bitmap);
             Glide.with(getContext()).asBitmap().load(bitmap).circleCrop().into(ivProfilePicture);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 40, stream);

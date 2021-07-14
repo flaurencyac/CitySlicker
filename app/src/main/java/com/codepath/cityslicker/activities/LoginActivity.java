@@ -35,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // check if someone is signed in already
         if (ParseUser.getCurrentUser() != null) {
             goMainActivity();
         }
@@ -98,16 +97,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login(String username, String password) {
         Log.i(TAG, "Attempting to login user " +username);
-        // LogInInBackground is preferred bc it executes this in the background thread
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
-            // if request succeeds exception e should be null
             public void done(ParseUser user, ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "Issue with login"+e, e);
                     Toast.makeText(LoginActivity.this, "Unable to log in", Toast.LENGTH_SHORT).show();
                 } else {
-                    // navigate to the main activity if the user has signed in properly
                     goMainActivity();
                     Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
                 }
