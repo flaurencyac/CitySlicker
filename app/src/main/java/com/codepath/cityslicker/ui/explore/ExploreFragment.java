@@ -23,6 +23,8 @@ import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.databinding.FragmentExploreBinding;
 import com.codepath.cityslicker.fragments.POIDialogFragment;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
@@ -85,36 +87,19 @@ public class ExploreFragment extends Fragment  {
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull @NotNull Place selectedPlace) {
-                moveCamera(selectedPlace.getLatLng(),ZOOM, selectedPlace.getAddress());
-                final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
+                        Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
                 final FetchPlaceRequest request = FetchPlaceRequest.newInstance(selectedPlace.getId(), placeFields);
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                     Place place = response.getPlace();
-                    Log.i(TAG, "Place: " + place.getAddress() + ", " + place.getId());
-                    Log.i(TAG, "Place name: " + place.getName());
-                    Log.i(TAG, "Place attributions: "+ place.getAttributions());
-                    Log.i(TAG, "Place viewport: " + place.getViewport());
-                    Log.i(TAG, "Place phone number: "+place.getPhoneNumber());
-                    Log.i(TAG, "Place website: "+place.getWebsiteUri());
-                    Log.i(TAG, "Place ID: " + place.getId());
-                    Log.i(TAG, "Place rating: "+place.getRating());
-                    Log.i(TAG, "Place type: "+place.getTypes());
-                    Log.i(TAG, "Place num of ratings" + place.getUserRatingsTotal());
-                    Log.i(TAG, "Place price level: "+ place.getPriceLevel());
-                    Log.i(TAG, "Place photo: "+place.getPhotoMetadatas());
-                    Log.i(TAG, "Place address components:"+place.getAddressComponents());
-                    Log.i(TAG, "Place address:"+place.getAddress());
-                    Log.i(TAG, "Place opening hours"+place.getOpeningHours());
-
+                    moveCamera(place.getLatLng(),ZOOM, place.getName());
                     showPlaceDetailsFragment(place);
-
                 }).addOnFailureListener((exception) -> {
                             if (exception instanceof ApiException) {
                                 final ApiException apiException = (ApiException) exception;
                                 Log.e(TAG, "Place not found: "+exception.getMessage());
                                 final int statusCode = apiException.getStatusCode();
-                }
-                });
+                }});
             }
             @Override
             public void onError(@NonNull @NotNull Status status) {
@@ -122,13 +107,11 @@ public class ExploreFragment extends Fragment  {
             }
         });
         getLocationPermission();
-        // init map
         initMap();
 
     }
 
     private void initMap() {
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap gMap) {
@@ -143,7 +126,6 @@ public class ExploreFragment extends Fragment  {
                 });
                 if (locationPermissionsGranted) {
                     getDeviceLocation();
-                    // permission check
                     if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }

@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PointOfInterest;
-import com.google.android.libraries.places.api.model.AddressComponents;
 import com.google.android.libraries.places.api.model.OpeningHours;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -27,10 +26,15 @@ public class PlaceParcelableObject implements Parcelable {
     private Uri websiteUri;
     private List<PhotoMetadata> photoMetadataList;
     private OpeningHours openingHours;
-    private AddressComponents addressComponents;
     private List<Place.Type> typesList;
 
     public PlaceParcelableObject() {}
+
+    public PlaceParcelableObject(PointOfInterest poi) {
+        name = poi.name;
+        id = poi.placeId;
+        latLng = poi.latLng;
+    }
 
     public PlaceParcelableObject(Place place) {
         name = place.getName();
@@ -44,15 +48,17 @@ public class PlaceParcelableObject implements Parcelable {
         websiteUri = place.getWebsiteUri();
         photoMetadataList = place.getPhotoMetadatas();
         openingHours = place.getOpeningHours();
-        addressComponents = place.getAddressComponents();
         typesList = place.getTypes();
     }
 
-    public PlaceParcelableObject(PointOfInterest poi) {
-        name = poi.name;
-        id = poi.placeId;
-        latLng = poi.latLng;
-        // TODO: use placeID to make a Place Details request to fill out the other fields
+    @Override
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        dest.writeStringArray(new String[] {this.name, this.id, this.address, this.phoneNumber});
+        dest.writeDouble(this.numOfRatings);
+        dest.writeParcelable(this.openingHours, flags);
+        dest.writeParcelable(this.websiteUri, flags);
+        dest.writeTypedArray(this.typesList.toArray(new Place.Type[0]), flags);
+        dest.writeTypedArray(this.photoMetadataList.toArray(new PhotoMetadata[0]), flags);
     }
 
     protected PlaceParcelableObject(android.os.Parcel in) {
@@ -60,7 +66,6 @@ public class PlaceParcelableObject implements Parcelable {
         address = in.readString();
         id = in.readString();
         phoneNumber = in.readString();
-        attributions = in.createStringArrayList();
         if (in.readByte() == 0) {
             rating = null;
         } else {
@@ -75,11 +80,10 @@ public class PlaceParcelableObject implements Parcelable {
         websiteUri = in.readParcelable(Uri.class.getClassLoader());
         //photoMetadataList = in.createTypedArrayList(PhotoMetadata);
         openingHours = in.readParcelable(OpeningHours.class.getClassLoader());
-        addressComponents = in.readParcelable(AddressComponents.class.getClassLoader());
         typesList = in.createTypedArrayList(Place.Type.CREATOR);
     }
 
-    public static final Creator<PlaceParcelableObject> CREATOR = new Creator<PlaceParcelableObject>() {
+    public static final Parcelable.Creator<PlaceParcelableObject> CREATOR = new Parcelable.Creator<PlaceParcelableObject>() {
         @Override
         public PlaceParcelableObject createFromParcel(android.os.Parcel in) {
             return new PlaceParcelableObject(in);
@@ -94,11 +98,6 @@ public class PlaceParcelableObject implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    @Override
-    public void writeToParcel(android.os.Parcel dest, int flags) {
-        dest.writeStringArray(new String[] {this.name, this.id});
     }
 
     public String getName() {
@@ -117,9 +116,7 @@ public class PlaceParcelableObject implements Parcelable {
         return phoneNumber;
     }
 
-    public List<String> getAttributions() {
-        return attributions;
-    }
+    public List<String> getAttributions() { return attributions; }
 
     public Double getRating() {
         return rating;
@@ -143,10 +140,6 @@ public class PlaceParcelableObject implements Parcelable {
 
     public OpeningHours getOpeningHours() {
         return openingHours;
-    }
-
-    public AddressComponents getAddressComponents() {
-        return addressComponents;
     }
 
     public List<Place.Type> getTypesList() {
