@@ -1,0 +1,2 @@
+rootProject.name = "CitySlicker"
+include ':app'

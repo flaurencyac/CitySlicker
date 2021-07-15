@@ -75,11 +75,11 @@ public class ExploreFragment extends Fragment  {
         return root;
     }
 
-
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Places.initialize(getContext(), BuildConfig.MAPS_API_KEY);
+
         PlacesClient placesClient = Places.createClient(getContext());
         autocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG));
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
