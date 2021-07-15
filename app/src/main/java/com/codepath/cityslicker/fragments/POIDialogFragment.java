@@ -111,7 +111,10 @@ public class POIDialogFragment extends DialogFragment {
         btnNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Create/save the parse object, pass the place/poi as a parcel and init the New Trip Form Activity
+                // TODO: pass the place/poi as a parcel and init the New Trip Form Fragment
+                //  Create/save the parse object when user clicks save on the trip form
+                //  (bc we need a trip for the place to belong to first)
+
             }
         });
 

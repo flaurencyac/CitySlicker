@@ -78,7 +78,6 @@ public class PlaceParcelableObject implements Parcelable {
         }
         latLng = in.readParcelable(LatLng.class.getClassLoader());
         websiteUri = in.readParcelable(Uri.class.getClassLoader());
-        //photoMetadataList = in.createTypedArrayList(PhotoMetadata);
         openingHours = in.readParcelable(OpeningHours.class.getClassLoader());
         typesList = in.createTypedArrayList(Place.Type.CREATOR);
     }
@@ -104,46 +103,8 @@ public class PlaceParcelableObject implements Parcelable {
         return name;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
     public String getId() {
         return id;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public List<String> getAttributions() { return attributions; }
-
-    public Double getRating() {
-        return rating;
-    }
-
-    public Integer getNumOfRatings() {
-        return numOfRatings;
-    }
-
-    public LatLng getLatLng() {
-        return latLng;
-    }
-
-    public Uri getWebsiteUri() {
-        return websiteUri;
-    }
-
-    public List<PhotoMetadata> getPhotoMetadataList() {
-        return photoMetadataList;
-    }
-
-    public OpeningHours getOpeningHours() {
-        return openingHours;
-    }
-
-    public List<Place.Type> getTypesList() {
-        return typesList;
     }
 }
 

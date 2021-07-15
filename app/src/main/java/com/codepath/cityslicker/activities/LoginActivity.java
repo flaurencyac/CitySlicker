@@ -15,6 +15,7 @@ import com.codepath.cityslicker.MainActivity;
 import com.codepath.cityslicker.R;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
