@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -39,8 +41,10 @@ import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,16 +59,28 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private AutoCompleteTextView actvCollaborators;
     private AutocompleteSupportFragment autocompleteSupportFragment;
     private TextView tvCities;
+    private TextView tvFromDate;
+    private TextView tvToDate;
+    private Button btnFromDate;
+    private Button btnToDate;
 
     private HashMap<String, Integer> collaborators = new HashMap<>();
     private static ArrayList<String> usersList = new ArrayList<>();
     private ArrayList<String> regions = new ArrayList<>();
+    private String selectedDate;
+    private com.codepath.cityslicker.DatePicker datePickerDialogFragment;
+    private Boolean fromDate = false;
+    private Boolean toDate = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         composeViewModel = new ViewModelProvider(this).get(ComposeViewModel.class);
         binding = FragmentComposeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         etTripName = binding.etTripName;
+        tvFromDate = binding.tvFromDate;
+        tvToDate = binding.tvToDate;
+        btnFromDate = binding.btnFromDate;
+        btnToDate = binding.btnToDate;
         tvCities = binding.tvCities;
         autocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         actvCollaborators = binding.actvCollaborators;
@@ -87,7 +103,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             }
         });
         Places.initialize(getContext(), BuildConfig.MAPS_API_KEY);
-        PlacesClient placesClient = Places.createClient(getContext());
         autocompleteSupportFragment.setTypeFilter(TypeFilter.CITIES);
         autocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.ADDRESS, Place.Field.NAME));
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -99,6 +114,26 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void onError(@NonNull @NotNull Status status) {
                 Log.i(TAG, "Error searching occurred: " + status);
+            }
+        });
+        btnFromDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerDialogFragment = new com.codepath.cityslicker.DatePicker();
+                datePickerDialogFragment.setTargetFragment(ComposeFragment.this, 0);
+                datePickerDialogFragment.show(getParentFragmentManager(), "DATE PICK");
+                fromDate = true;
+                toDate = false;
+            }
+        });
+        btnToDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerDialogFragment = new com.codepath.cityslicker.DatePicker();
+                datePickerDialogFragment.setTargetFragment(ComposeFragment.this, 0);
+                datePickerDialogFragment.show(getParentFragmentManager(), "DATE PICK");
+                fromDate = false;
+                toDate = true;
             }
         });
     }
@@ -149,6 +184,30 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
+        Calendar mCalender = Calendar.getInstance();
+        mCalender.set(Calendar.YEAR,year);
+        mCalender.set(Calendar.MONTH,month);
+        mCalender.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+        selectedDate = DateFormat.getDateInstance(DateFormat.FULL).format(mCalender.getTime());
+        if (fromDate) {
+            tvFromDate.setText("From: "+selectedDate);
+        } else {
+            tvToDate.setText("To: "+selectedDate);
+        }
     }
+
+    public void onCheckboxClicked(View view) {
+        boolean checked = ((CheckBox) view).isChecked();
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.checkbox_restaurants:
+                if (checked) {
+
+                } else {
+
+                }
+                break;
+        }
+    }
+
 }
