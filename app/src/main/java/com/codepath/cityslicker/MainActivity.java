@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.codepath.cityslicker.activities.LoginActivity;
+import com.codepath.cityslicker.ui.compose.ComposeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +23,12 @@ import androidx.navigation.ui.NavigationUI;
 import com.codepath.cityslicker.databinding.ActivityMainBinding;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
+    protected ArrayList<String> preferences = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,32 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return true;
+    }
+
+    public void onCheckboxClicked(View view) {
+        boolean checked = ((CheckBox) view).isChecked();
+        switch(view.getId()) {
+            case R.id.cbRestaurants:
+                if (checked) {
+                    // TODO: put or remove preferences in a list of strings in the Compose Fragment
+                    Toast.makeText(this, "Added restaurants to preferences", Toast.LENGTH_SHORT).show();
+                    preferences.add("restaurants");
+                } else {
+                    Toast.makeText(this, "Removed restaurants from preferences", Toast.LENGTH_SHORT).show();
+                    preferences.remove("restaurants");
+                }
+                break;
+            case R.id.cbHealth:
+                break;
+            case R.id.cbAdult:
+                break;
+            case R.id.cbFamilyFriendly:
+                break;
+            case R.id.cbAttractions:
+                break;
+            case R.id.cbShopping:
+                break;
+        }
     }
 
 }

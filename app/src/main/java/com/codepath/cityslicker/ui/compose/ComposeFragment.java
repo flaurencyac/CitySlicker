@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.R;
+import com.codepath.cityslicker.databinding.FragmentComposeBinding;
 import com.codepath.cityslicker.databinding.FragmentComposeBinding;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
@@ -63,6 +65,8 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private TextView tvToDate;
     private Button btnFromDate;
     private Button btnToDate;
+    private SeekBar seekBar;
+    private Button btnCreateTrip;
 
     private HashMap<String, Integer> collaborators = new HashMap<>();
     private static ArrayList<String> usersList = new ArrayList<>();
@@ -71,6 +75,9 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private com.codepath.cityslicker.DatePicker datePickerDialogFragment;
     private Boolean fromDate = false;
     private Boolean toDate = false;
+    private ArrayList<String> preferences = new ArrayList<>();
+    private Integer budget = 1;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         composeViewModel = new ViewModelProvider(this).get(ComposeViewModel.class);
@@ -82,6 +89,9 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         btnFromDate = binding.btnFromDate;
         btnToDate = binding.btnToDate;
         tvCities = binding.tvCities;
+        seekBar = binding.seekBar;
+        btnCreateTrip = binding.btnCreateTrip;
+
         autocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         actvCollaborators = binding.actvCollaborators;
         tvCollaborators = binding.tvCollaborators;
@@ -116,11 +126,11 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 Log.i(TAG, "Error searching occurred: " + status);
             }
         });
+        datePickerDialogFragment = new com.codepath.cityslicker.DatePicker();
+        datePickerDialogFragment.setTargetFragment(ComposeFragment.this, 0);
         btnFromDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerDialogFragment = new com.codepath.cityslicker.DatePicker();
-                datePickerDialogFragment.setTargetFragment(ComposeFragment.this, 0);
                 datePickerDialogFragment.show(getParentFragmentManager(), "DATE PICK");
                 fromDate = true;
                 toDate = false;
@@ -129,11 +139,29 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         btnToDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerDialogFragment = new com.codepath.cityslicker.DatePicker();
-                datePickerDialogFragment.setTargetFragment(ComposeFragment.this, 0);
                 datePickerDialogFragment.show(getParentFragmentManager(), "DATE PICK");
                 fromDate = false;
                 toDate = true;
+            }
+        });
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                budget = seekBar.getProgress()+1;
+                Toast.makeText(getContext(), "Budget changed to: " + budget, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        btnCreateTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: create and save a new trip in Parse
+                //  navigate to map of first region
             }
         });
     }
@@ -191,23 +219,17 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         selectedDate = DateFormat.getDateInstance(DateFormat.FULL).format(mCalender.getTime());
         if (fromDate) {
             tvFromDate.setText("From: "+selectedDate);
-        } else {
+        } else if (toDate) {
             tvToDate.setText("To: "+selectedDate);
         }
     }
 
-    public void onCheckboxClicked(View view) {
-        boolean checked = ((CheckBox) view).isChecked();
-        // Check which checkbox was clicked
-        switch(view.getId()) {
-            case R.id.checkbox_restaurants:
-                if (checked) {
+    public void addPreference(String preference) {
+        preferences.add(preference);
+    }
 
-                } else {
-
-                }
-                break;
-        }
+    public void removePreference(String preference) {
+        preferences.remove(preference);
     }
 
 }

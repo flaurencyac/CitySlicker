@@ -141,24 +141,201 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="393dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/tvPreferences"
         android:layout_marginTop="2dp"
         android:orientation="vertical">
 
         <CheckBox
-            android:id="@+id/checkbox_restaurants"
+            android:id="@+id/cbAdult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onCheckboxClicked"
+            android:text="Adult" />
+
+        <CheckBox
+            android:id="@+id/cbFamilyFriendly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onCheckboxClicked"
+            android:text="Family Friendly" />
+
+        <CheckBox
+            android:id="@+id/cbAttractions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onCheckboxClicked"
+            android:text="Tourist Attractions" />
+
+        <CheckBox
+            android:id="@+id/cbRestaurants"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onCheckboxClicked"
             android:text="Restaurants" />
 
         <CheckBox
-            android:id="@+id/checkbox_health"
+            android:id="@+id/cbShopping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onCheckboxClicked"
+            android:text="Shopping" />
+
+        <CheckBox
+            android:id="@+id/cbHealth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onCheckboxClicked"
             android:text="Health" />
     </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="87dp"
+        android:layout_marginEnd="49dp"
+        android:layout_marginBottom="53dp"
+        android:max="3"
+        android:progress="0"
+        android:progressTint="@color/cityBlue"
+        android:rotation="-90"
+        android:rotationY="0"
+        android:thumbTint="#F32140" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="127dp"
+        android:layout_marginEnd="80dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="58dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="-1dp"
+        android:layout_marginEnd="87dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="59dp"
+        android:layout_marginBottom="300dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="84dp"
+        android:layout_marginBottom="300dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="33dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginBottom="300dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="58dp"
+        android:layout_marginBottom="257dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="83dp"
+        android:layout_marginBottom="217dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="11dp"
+        android:src="@drawable/ic_dollar_sign" />
+
+    <Button
+        android:id="@+id/btnCreateTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="150dp"
+        android:layout_marginBottom="44dp"
+        android:backgroundTint="@color/cityBlue"
+        android:text="Create Trip"
+        android:textColor="@color/white" />
 
 </RelativeLayout>
