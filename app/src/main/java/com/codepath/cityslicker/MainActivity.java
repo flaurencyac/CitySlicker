@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
-    protected ArrayList<String> preferences = new ArrayList<>();
+    public static ArrayList<String> preferences = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,23 +71,57 @@ public class MainActivity extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.cbRestaurants:
                 if (checked) {
-                    // TODO: put or remove preferences in a list of strings in the Compose Fragment
-                    Toast.makeText(this, "Added restaurants to preferences", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Added Restaurants to preferences", Toast.LENGTH_SHORT).show();
                     preferences.add("restaurants");
                 } else {
-                    Toast.makeText(this, "Removed restaurants from preferences", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Removed Restaurants from preferences", Toast.LENGTH_SHORT).show();
                     preferences.remove("restaurants");
                 }
                 break;
             case R.id.cbHealth:
+                if (checked) {
+                    Toast.makeText(this, "Added Health to preferences", Toast.LENGTH_SHORT).show();
+                    preferences.add("health");
+                } else {
+                    Toast.makeText(this, "Removed Health from preferences", Toast.LENGTH_SHORT).show();
+                    preferences.remove("health");
+                }
                 break;
             case R.id.cbAdult:
+                if (checked) {
+                    Toast.makeText(this, "Added Adult to preferences", Toast.LENGTH_SHORT).show();
+                    preferences.add("adult");
+                } else {
+                    Toast.makeText(this, "Removed Adult from preferences", Toast.LENGTH_SHORT).show();
+                    preferences.remove("adult");
+                }
                 break;
             case R.id.cbFamilyFriendly:
+                if (checked) {
+                    Toast.makeText(this, "Added Family Friendly to preferences", Toast.LENGTH_SHORT).show();
+                    preferences.add("family");
+                } else {
+                    Toast.makeText(this, "Removed Family Friendly from preferences", Toast.LENGTH_SHORT).show();
+                    preferences.remove("family");
+                }
                 break;
             case R.id.cbAttractions:
+                if (checked) {
+                    Toast.makeText(this, "Added Tourist Attractions to preferences", Toast.LENGTH_SHORT).show();
+                    preferences.add("attractions");
+                } else {
+                    Toast.makeText(this, "Removed Tourist Attractions from preferences", Toast.LENGTH_SHORT).show();
+                    preferences.remove("attractions");
+                }
                 break;
             case R.id.cbShopping:
+                if (checked) {
+                    Toast.makeText(this, "Added Shopping to preferences", Toast.LENGTH_SHORT).show();
+                    preferences.add("shopping");
+                } else {
+                    Toast.makeText(this, "Removed Shopping from preferences", Toast.LENGTH_SHORT).show();
+                    preferences.remove("shopping");
+                }
                 break;
         }
     }

@@ -1,6 +1,7 @@
 package com.codepath.cityslicker.ui.compose;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,9 +27,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.codepath.cityslicker.BuildConfig;
+import com.codepath.cityslicker.MainActivity;
+import com.codepath.cityslicker.PlaceParcelableObject;
 import com.codepath.cityslicker.R;
+import com.codepath.cityslicker.activities.MapsActivity;
 import com.codepath.cityslicker.databinding.FragmentComposeBinding;
 import com.codepath.cityslicker.databinding.FragmentComposeBinding;
+import com.codepath.cityslicker.models.Trip;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -38,15 +43,21 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.parceler.Parcels;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,15 +79,24 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private SeekBar seekBar;
     private Button btnCreateTrip;
 
-    private HashMap<String, Integer> collaborators = new HashMap<>();
+    private ArrayList<String> collaborators = new ArrayList<>();
+    private ArrayList<String> cityIDs = new ArrayList<>();
     private static ArrayList<String> usersList = new ArrayList<>();
     private ArrayList<String> regions = new ArrayList<>();
     private String selectedDate;
     private com.codepath.cityslicker.DatePicker datePickerDialogFragment;
-    private Boolean fromDate = false;
-    private Boolean toDate = false;
-    private ArrayList<String> preferences = new ArrayList<>();
+    private Boolean fromDateBool = false;
+    private Boolean toDateBool = false;
+    //private ArrayList<String> preferences = new ArrayList<>();
     private Integer budget = 1;
+    private Date startDate;
+    private Date endDate;
+    private String tripId;
+
+    //  TODO: if there is a parcel:
+    //   placeParcelableObject = (PlaceParcelableObject) Parcels.unwrap(getIntent().getParcelableExtra("place"));
+    //   Create/save the parse place object when user clicks save on the trip form along with the new trip obj
+    //   also make one of the cities the city that the place belongs to
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -106,6 +126,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         findUsers();
         actvCollaborators.setAdapter(adapter);
         actvCollaborators.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 addToCollaboratorsList(actvCollaborators.getText().toString());
@@ -120,6 +141,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void onPlaceSelected(@NonNull @NotNull Place selectedPlace) {
                 addToRegions(selectedPlace.getName());
+                cityIDs.add(selectedPlace.getId());
             }
             @Override
             public void onError(@NonNull @NotNull Status status) {
@@ -132,16 +154,16 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void onClick(View v) {
                 datePickerDialogFragment.show(getParentFragmentManager(), "DATE PICK");
-                fromDate = true;
-                toDate = false;
+                fromDateBool = true;
+                toDateBool = false;
             }
         });
         btnToDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePickerDialogFragment.show(getParentFragmentManager(), "DATE PICK");
-                fromDate = false;
-                toDate = true;
+                fromDateBool = false;
+                toDateBool = true;
             }
         });
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -160,8 +182,22 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         btnCreateTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: create and save a new trip in Parse
-                //  navigate to map of first region
+                if (startDate == null || endDate == null) {
+                    Toast.makeText(getContext(), "Choose a start and end date!", Toast.LENGTH_SHORT).show();
+                } else if (startDate.after(endDate)) {
+                    Toast.makeText(getContext(), "The start date cannot be after the end date!", Toast.LENGTH_SHORT).show();
+                } else if (cityIDs.isEmpty()) {
+                    Toast.makeText(getContext(), "Choose at least one city!", Toast.LENGTH_SHORT).show();
+                } else if (etTripName.getText().equals("")) {
+                    Toast.makeText(getContext(), "Your trip must have a name!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Created Trip", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getContext(), MapsActivity.class);
+                    createTrip();
+                    intent.putExtra("tripId", tripId);
+                    resetForm();
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -187,18 +223,18 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void addToCollaboratorsList(String username) {
         if (usersList.contains(username)==false) {
             actvCollaborators.setText("");
             Toast.makeText(getContext(), "This user does not exist!", Toast.LENGTH_LONG).show();
         }
-        if (collaborators.containsKey(username)) {
+        if (collaborators.contains(username)) {
             actvCollaborators.setText("");
             Toast.makeText(getContext(), "Cannot add the same person!", Toast.LENGTH_SHORT).show();
         } else {
-            collaborators.put(username, 1);
-            String dictToString = collaborators.keySet().toString();
-            tvCollaborators.setText("Collaborators: "+dictToString.substring(3, dictToString.length()-1));
+            collaborators.add(username);
+            tvCollaborators.setText("Collaborators: "+ String.join(",", collaborators));
             actvCollaborators.setText("");
             usersList.remove(username);
         }
@@ -217,19 +253,51 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         mCalender.set(Calendar.MONTH,month);
         mCalender.set(Calendar.DAY_OF_MONTH,dayOfMonth);
         selectedDate = DateFormat.getDateInstance(DateFormat.FULL).format(mCalender.getTime());
-        if (fromDate) {
+        if (fromDateBool) {
             tvFromDate.setText("From: "+selectedDate);
-        } else if (toDate) {
+            startDate = mCalender.getTime();
+        } else if (toDateBool) {
             tvToDate.setText("To: "+selectedDate);
+            endDate = mCalender.getTime();
         }
     }
 
-    public void addPreference(String preference) {
-        preferences.add(preference);
+    private void resetForm() {
+        etTripName.setText("");
+        tvCities.setText("Cities: ");
+        tvCollaborators.setText("Collaborators: ");
+        MainActivity.preferences.clear();
+        seekBar.setProgress(0);
+        tvFromDate.setText("From: ");
+        tvToDate.setText("To: ");
+        startDate = null;
+        endDate = null;
+        budget = 1;
     }
 
-    public void removePreference(String preference) {
-        preferences.remove(preference);
+    private void createTrip() {
+        Trip trip = new Trip();
+        trip.setBudget(budget);
+        // the subList removes the last elem of the array because the last elem of the array is " " empty string
+        if (collaborators.size() >= 2) {
+            trip.setCollaborators(new JSONArray(collaborators.subList(0, collaborators.size()-1)));
+        }
+        trip.setOwner(ParseUser.getCurrentUser());
+        trip.setEndDate(endDate);
+        trip.setStartDate(startDate);
+        trip.setRegions(new JSONArray(cityIDs));
+        trip.setPreferences(new JSONArray(MainActivity.preferences));
+        trip.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e==null){
+                    Log.i(TAG, "Trip Created");
+                }else{
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        tripId = trip.getObjectId();
     }
 
 }

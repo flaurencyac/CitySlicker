@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.PlaceParcelableObject;
 import com.codepath.cityslicker.R;
-import com.codepath.cityslicker.ui.compose.ComposeFragment;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.api.ApiException;
@@ -34,12 +32,10 @@ import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
-import org.parceler.Parcels;
-
 import java.util.Arrays;
 import java.util.List;
 
-public class POIDialogFragment extends DialogFragment {
+public class AddToTripPOIDialogFragment extends DialogFragment {
     private static final String TAG = "POIDialogFragment";
 
     private TextView tvPlaceName;
@@ -51,24 +47,22 @@ public class POIDialogFragment extends DialogFragment {
     private TextView tvOpeningHours;
     private ImageView ivPhoto;
     private RatingBar ratingBar;
-    private Button btnExistingTrip;
+    private Button btnAddToTrip;
     private ImageButton ibClose;
     protected Bitmap bitmap;
 
-    private String city;
+    public AddToTripPOIDialogFragment() {}
 
-    public POIDialogFragment() {}
-
-    public static POIDialogFragment newInstance(PointOfInterest poi) {
-        POIDialogFragment frag = new POIDialogFragment();
+    public static AddToTripPOIDialogFragment newInstance(PointOfInterest poi) {
+        AddToTripPOIDialogFragment frag = new AddToTripPOIDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable("place", (Parcelable) new PlaceParcelableObject(poi));
         frag.setArguments(args);
         return frag;
     }
 
-    public static POIDialogFragment newInstance(Place place) {
-        POIDialogFragment frag = new POIDialogFragment();
+    public static AddToTripPOIDialogFragment newInstance(Place place) {
+        AddToTripPOIDialogFragment frag = new AddToTripPOIDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable("place", (Parcelable) new PlaceParcelableObject(place));
         frag.setArguments(args);
@@ -100,13 +94,30 @@ public class POIDialogFragment extends DialogFragment {
         tvOpeningHours = view.findViewById(R.id.tvOpeningHours);
         ivPhoto = view.findViewById(R.id.ivPhoto);
         ratingBar = view.findViewById(R.id.ratingBar);
-        btnExistingTrip = view.findViewById(R.id.btnAddToTrip);
+        btnAddToTrip = view.findViewById(R.id.btnAddToTrip);
         ibClose = view.findViewById(R.id.ibClose);
+
+        ibClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        btnAddToTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: pass the place/poi as a parcel and init the New Trip Form Fragment
+                //  Create/save the parse place object when user clicks "add to trip"
+                //  if there doesn't already exist a place with the same trip owner and placeID
+                //  add objectID or placeID to places array within Trip class
+
+            }
+        });
 
         PlaceParcelableObject placeParcelableObject = (PlaceParcelableObject) getArguments().getParcelable("place");
         Places.initialize(getContext(), BuildConfig.MAPS_API_KEY);
         PlacesClient placesClient = Places.createClient(getContext());
-        final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.RATING,
+        final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
                 Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeParcelableObject.getId(), placeFields);
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
@@ -117,12 +128,8 @@ public class POIDialogFragment extends DialogFragment {
             tvPhoneNumber.setText(place.getPhoneNumber());
             tvRating.setText("" + place.getRating());
             tvNumRatings.setText("(" + place.getUserRatingsTotal()+")");
-            if (place.getRating() != null) {
-                ratingBar.setRating(place.getRating().floatValue());
-            }
-            if (place.getWebsiteUri()!= null) {
-                tvWebsiteLink.setText(""+ place.getWebsiteUri());
-            }
+            ratingBar.setRating(place.getRating().floatValue());
+            tvWebsiteLink.setText(""+ place.getWebsiteUri());
             if (place.getOpeningHours() != null) {
                 tvOpeningHours.setText(
                         String.format("%s\n%s\n%s\n%s\n%s\n%s\n%s",
@@ -133,23 +140,6 @@ public class POIDialogFragment extends DialogFragment {
                                 place.getOpeningHours().getWeekdayText().get(4),
                                 place.getOpeningHours().getWeekdayText().get(5),
                                 place.getOpeningHours().getWeekdayText().get(6)));
-            }
-        });
-
-        ibClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-        btnExistingTrip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: pass the place/poi as a parcel and init the list of trips screen
-                //Intent intent = new Intent(getContext(), AllTrips.class);
-                //intent.putExtra("place", placeParcelableObject);
-                //  Create/save the parse place object add it to the trip once the user selects a trip
-                //  go to edit trip details screen and see the new place
             }
         });
     }

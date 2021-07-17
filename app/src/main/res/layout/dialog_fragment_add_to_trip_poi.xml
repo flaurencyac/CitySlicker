@@ -134,24 +134,10 @@
         android:layout_marginStart="2dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="4dp"
-        android:layout_toEndOf="@+id/btnNewTrip"
         android:backgroundTint="@color/cityBlue"
-        android:text="Add to Old Trip"
+        android:text="Add to Trip"
         android:textColor="#FFFFFF" />
 
-    <Button
-        android:id="@+id/btnNewTrip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvOpeningHours"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="false"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="0dp"
-        android:backgroundTint="@color/cityBlue"
-        android:text="Create New Trip"
-        android:textColor="#FFFFFF" />
 
     <ImageButton
         android:id="@+id/ibClose"

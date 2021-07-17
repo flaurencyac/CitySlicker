@@ -58,13 +58,15 @@ public class ExploreFragment extends Fragment  {
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final float ZOOM = 15f;
+    private final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
+            Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
 
+    public static Boolean locationPermissionsGranted = false;
     private ExploreViewModel exploreViewModel;
     private FragmentExploreBinding binding;
     private AutocompleteSupportFragment autocompleteSupportFragment;
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
-    private Boolean locationPermissionsGranted = false;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location currentLocation;
 
@@ -77,7 +79,6 @@ public class ExploreFragment extends Fragment  {
         return root;
     }
 
-
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -87,8 +88,6 @@ public class ExploreFragment extends Fragment  {
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull @NotNull Place selectedPlace) {
-                final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
-                        Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
                 final FetchPlaceRequest request = FetchPlaceRequest.newInstance(selectedPlace.getId(), placeFields);
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                     Place place = response.getPlace();
@@ -99,6 +98,7 @@ public class ExploreFragment extends Fragment  {
                                 final ApiException apiException = (ApiException) exception;
                                 Log.e(TAG, "Place not found: "+exception.getMessage());
                                 final int statusCode = apiException.getStatusCode();
+                                Log.e(TAG, "Status Code: "+statusCode);
                 }});
             }
             @Override
@@ -135,7 +135,7 @@ public class ExploreFragment extends Fragment  {
         });
     }
 
-    private void moveCamera(LatLng latLng, float zoom, String title) {
+    public void moveCamera(LatLng latLng, float zoom, String title) {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         MarkerOptions options = new MarkerOptions().position(latLng).title(title);
         googleMap.addMarker(options);
