@@ -22,8 +22,20 @@ tools:context=".ui.explore.ExploreFragment">
         tools:context="activities.MapsActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
 
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#EF4141"
+        android:text="Next"
+        android:textColor="#FFFFFF" />
 
-<!--    <FrameLayout-->
+
+    <!--    <FrameLayout-->
 <!--        android:id="@+id/standardBottomSheet"-->
 <!--        android:layout_below="@+id/map"-->
 <!--        android:layout_width="match_parent"-->

@@ -10,7 +10,6 @@ public class ParseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        // Register your parse models
         ParseObject.registerSubclass(Place.class);
         ParseObject.registerSubclass(Trip.class);
         Parse.initialize(new Parse.Configuration.Builder(this)

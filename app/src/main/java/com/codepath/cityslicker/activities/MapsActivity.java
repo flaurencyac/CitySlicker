@@ -14,11 +14,13 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.databinding.ActivityMapsBinding;
+import com.codepath.cityslicker.fragments.AddToTripPOIDialogFragment;
 import com.codepath.cityslicker.fragments.POIDialogFragment;
 import com.codepath.cityslicker.models.Trip;
 import com.codepath.cityslicker.ui.explore.ExploreFragment;
@@ -36,6 +38,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -48,55 +52,59 @@ import com.parse.ParseQuery;
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "MapsActivity";
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private static final float ZOOM = 15f;
+    private static final float BOUNDARY_ZOOM = 11f;
+    private static final float CENTER_ZOOM = 15f;
     private final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
             Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
-    private static LatLngBounds restrictedBoundsArea;
 
+    private Button btnNext;
+    private Context context;
+    private GoogleMap googleMap;
     private PlacesClient placesClient;
+    private SupportMapFragment supportMapFragment;
+    private AutocompleteSupportFragment autocompleteSupportFragment;
+
+    private static LatLngBounds latLngBoundary;
     private String tripId;
     private ArrayList<String> cityIdList = new ArrayList<>();
     private ArrayList<Place> cityList = new ArrayList<>();
-    private Context context;
-    private GoogleMap googleMap;
-    private AutocompleteSupportFragment autocompleteSupportFragment;
-    private SupportMapFragment supportMapFragment;
-    // TODO: set the target city to the first city in the list of cities that belongs to the Trip object ID
-    private Place targetCity;
+    private Integer currentCityIndex = 0;
+    private ArrayList<ArrayList<Place>> allPlaces = new ArrayList<>();
+    private ArrayList<Place> placesInCurrentCity = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         this.context = getApplicationContext();
+        btnNext = findViewById(R.id.btnNext);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
+        // TODO: replace w custom txt view so someone can search for nearby stuff
         Places.initialize(context, BuildConfig.MAPS_API_KEY);
         placesClient = Places.createClient(context);
-        // TODO: restrict place search
         autocompleteSupportFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-        //autocompleteSupportFragment.setLocationRestriction();
         autocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG));
+        autocompleteSupportFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull @NotNull Place selectedPlace) {
                  final FetchPlaceRequest request = FetchPlaceRequest.newInstance(selectedPlace.getId(), placeFields);
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                     Place place = response.getPlace();
-                    moveCamera(place.getLatLng(),ZOOM, place.getName());
+                    moveCamera(place.getLatLng(),CENTER_ZOOM, place.getName());
                     showPlaceDetailsFragment(place);
                 }).addOnFailureListener((exception) -> {
                     if (exception instanceof ApiException) {
                         final ApiException apiException = (ApiException) exception;
                         Log.e(TAG, "Place not found: "+exception.getMessage());
-                        final int statusCode = apiException.getStatusCode();
                     }});
             }
             @Override
@@ -104,7 +112,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.i(TAG, "Error searching occurred: " + status);
             }
         });
-
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentCityIndex == cityIdList.size()-1) {
+                    // TODO navigate to edit trip screen
+                    // TODO WHEN UPDATING A TRIP WITH ALL ITS PLACES: update trip object w/ JSONArray of [city1["_place_ParseObject_ids_"], city2[], city3[]]
+                } else {
+                    currentCityIndex += 1;
+                    panToCity(cityIdList.get(currentCityIndex));
+                    // TODO save list of places for that old city into the list of places array of arrays
+                }
+            }
+        });
     }
 
     @Override
@@ -112,8 +132,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tripId = getIntent().getStringExtra("tripId");
         getTargetCities();
         googleMap = gMap;
-        restrictedBoundsArea = googleMap.getProjection().getVisibleRegion().latLngBounds;
-        googleMap.setLatLngBoundsForCameraTarget(restrictedBoundsArea);
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.style_json));
         googleMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
             @Override
@@ -121,6 +139,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 showPOIDetailsFragment(pointOfInterest);
             }
         });
+    }
+
+    private void setLatLngBoundary(LatLng latLng) {
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, BOUNDARY_ZOOM));
+        latLngBoundary = googleMap.getProjection().getVisibleRegion().latLngBounds;
+        // TODO DEBUG: googleMap.setLatLngBoundsForCameraTarget(latLngBoundary);
+        autocompleteSupportFragment.setLocationRestriction(RectangularBounds.newInstance(latLngBoundary));
     }
 
     private void moveCamera(LatLng latLng, float zoom, String title) {
@@ -133,23 +158,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void showPOIDetailsFragment(PointOfInterest poi) {
         Toast.makeText(this, "Clicked: " + poi.name + "Place ID:" + poi.placeId + "Latitude:" + poi.latLng.latitude + " Longitude:" + poi.latLng.longitude, Toast.LENGTH_SHORT).show();
         FragmentManager fm = getSupportFragmentManager();
-        POIDialogFragment poiDialogFragment = POIDialogFragment.newInstance(poi);
-        poiDialogFragment.show(fm, "dialog_fragment_add_to_trip_poi");
+        AddToTripPOIDialogFragment addToTripPOIDialogFragment = AddToTripPOIDialogFragment.newInstance(poi);
+        // TODO : if place is added to trip create a Parse obj for that place (including place API ID)
+        // TODO: place Parse object ID update User's list of places for that city
+        addToTripPOIDialogFragment.show(fm, "dialog_fragment_add_to_trip_poi");
     }
 
     public void showPlaceDetailsFragment(Place place) {
         FragmentManager fm = getSupportFragmentManager();
-        POIDialogFragment poiDialogFragment = POIDialogFragment.newInstance(place);
-        poiDialogFragment.show(fm, "dialog_fragment_add_to_trip_poi");
+        AddToTripPOIDialogFragment addToTripPOIDialogFragment = AddToTripPOIDialogFragment.newInstance(place);
+        // TODO : if poi is added to trip add to list of places for that city
+        addToTripPOIDialogFragment.show(fm, "dialog_fragment_add_to_trip_poi");
     }
 
-    private void getTargetCity() {
-        if(cityList.size() > 0) {
-            targetCity = cityList.get(0);
-        }
-    }
-
-    // convert cityIds stored in Parse to place objects with Places API
+    // get list of cityIds stored in Parse and pan to the first city
     private void getTargetCities() {
         ParseQuery<Trip> query = ParseQuery.getQuery("Trip");
         query.include((Trip.KEY_REGIONS));
@@ -159,29 +181,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return;
             } else {
                 cityIdList = (ArrayList<String>) object.get(Trip.KEY_REGIONS);
-                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(cityIdList.get(0), placeFields);
-                placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                    Place place = response.getPlace();
-                    moveCamera(place.getLatLng(), ZOOM, place.getName());
-                    cityList.add(place);
-                    targetCity = place;
-                });
-//                for (String id : cityIdList) {
-//                    final FetchPlaceRequest request = FetchPlaceRequest.newInstance(id, placeFields);
-//                    placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-//                        Place place = response.getPlace();
-//                        Log.d(TAG, "Place: "+ place.getLatLng());
-//                        // TODO : find out why the place API call works but cityList.add(place does not)
-//                        moveCamera(place.getLatLng(), ZOOM, place.getName());
-//                        cityList.add(place);
-//                    }).addOnFailureListener((exception) -> {
-//                        if (exception instanceof ApiException) {
-//                            final ApiException apiException = (ApiException) exception;
-//                            Log.e(TAG, "Place not found: "+exception.getMessage());
-//                            final int statusCode = apiException.getStatusCode();
-//                            Log.e(TAG, "Status Code: "+statusCode);
-//                        }});
-//                }
+                panToCity(cityIdList.get(currentCityIndex));
+            }
+        });
+    }
+
+    private void panToCity(String cityId) {
+        final FetchPlaceRequest request = FetchPlaceRequest.newInstance(cityId, placeFields);
+        placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+            Place place = response.getPlace();
+            setLatLngBoundary(place.getLatLng());
+            moveCamera(place.getLatLng(), CENTER_ZOOM, place.getName());
+            cityList.add(place);
+            if (currentCityIndex == cityIdList.size()-1) {
+                btnNext.setText("Done!");
             }
         });
     }
