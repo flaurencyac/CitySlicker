@@ -91,12 +91,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private String tripId;
     private Trip trip;
 
-    //  TODO: if there is a parcel:
-    //   placeParcelableObject = (PlaceParcelableObject) Parcels.unwrap(getIntent().getParcelableExtra("place"));
-    //   Create/save the parse place object when user clicks save on the trip form along with the new trip obj
-    //   also make one of the cities the city that the place belongs to
-
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         composeViewModel = new ViewModelProvider(this).get(ComposeViewModel.class);
         binding = FragmentComposeBinding.inflate(inflater, container, false);

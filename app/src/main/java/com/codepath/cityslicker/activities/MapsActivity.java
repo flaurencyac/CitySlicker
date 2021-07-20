@@ -77,6 +77,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<ArrayList<String>> allPlaceIds = new ArrayList<ArrayList<String>>();
     private ArrayList<Spot> spotsInCurrentCity = new ArrayList<Spot>();
     private ArrayList<ArrayList<Spot>> allSpots = new ArrayList<ArrayList<Spot>>();
+    private ArrayList<String> spotIds = new ArrayList<>();
+    private ArrayList<String> allSpotIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,6 +204,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         allPlaceIds.add(placeIdsClone);
         ArrayList<Spot> spotsClone = new ArrayList<>(spotsInCurrentCity);
         allSpots.add(spotsClone);
+        ArrayList<String> spotIdsClone = new ArrayList<>(spotIds);
+        allSpotIds.add(spotIdsClone.toString());
+        spotIds.clear();
         spotsInCurrentCity.clear();
         placesInCurrentCity.clear();
         placesIdsCurrentCity.clear();
@@ -211,9 +216,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         allPlaces.add(placesInCurrentCity);
         allPlaceIds.add(placesIdsCurrentCity);
         allSpots.add(spotsInCurrentCity);
+        allSpotIds.add(spotIds.toString());
         ParseQuery<Trip> query  = ParseQuery.getQuery("Trip");
         query.getInBackground(tripId, (object, e) -> {
-            object.setPlaces(new JSONArray(allSpots));
+            object.setPlaces(new JSONArray(allSpotIds));
             object.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -250,6 +256,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (e!= null) {
                         Log.e(TAG, "Error creating spot in Parse", e);
                     } else {
+                        spotIds.add(spot.getObjectId());
                         Log.i(TAG, "Saved spot to parse!");
                     }
                 }

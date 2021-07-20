@@ -1,12 +1,16 @@
 package com.codepath.cityslicker.adapters;
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,8 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.R;
+import com.codepath.cityslicker.activities.DetailsActivity;
+import com.codepath.cityslicker.fragments.EditTripFragment;
 import com.codepath.cityslicker.models.Spot;
 import com.codepath.cityslicker.models.Trip;
+import com.codepath.cityslicker.ui.compose.ComposeFragment;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -32,7 +39,9 @@ import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> {
@@ -70,15 +79,16 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         return  places.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements DatePickerDialog.OnDateSetListener {
         private CardView cardView;
         private TextView tvPlaceName;
         private EditText etDate;
         private EditText etTime;
-        private ImageView ivRemove;
+        private Button btnRemove;
         private ImageView ivImage;
         private TextView tvAddress;
 
+        private com.codepath.cityslicker.DatePicker datePickerDialogFragment;
         private Bitmap bitmap;
 
         public ViewHolder (View itemView) {
@@ -87,7 +97,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
             tvPlaceName = itemView.findViewById(R.id.tvPlaceName);
             etDate = itemView.findViewById(R.id.etDate);
             etTime = itemView.findViewById(R.id.etTime);
-            ivRemove = itemView.findViewById(R.id.ivRemove);
+            btnRemove = itemView.findViewById(R.id.btnRemove);
             ivImage = itemView.findViewById(R.id.ivImage);
             tvAddress = itemView.findViewById(R.id.tvAddress);
         }
@@ -96,12 +106,23 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
             tvPlaceName.setText(place.getName());
             tvAddress.setText(place.getAddress());
             fetchPhoto(place.getPhotoMetadatas());
-            ivRemove.setOnClickListener(new View.OnClickListener() {
+            btnRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // TODO : remove the cardview, update the adapter notify of data set change
                     // TODO : update the list of spots in Parse for that trip
                     // TODO : remove the spot object rom Parse
+                    places.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());
+
+
+                }
+            });
+            etTime.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    setTime();
+                    return false;
                 }
             });
             etTime.setOnClickListener(new View.OnClickListener() {
@@ -110,10 +131,19 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                     setTime();
                 }
             });
+            datePickerDialogFragment = new com.codepath.cityslicker.DatePicker();
+            //datePickerDialogFragment.setTargetFragment((EditTripFragment) context, 0);
+            etDate.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    datePickerDialogFragment.show(((DetailsActivity)context).getSupportFragmentManager(), "DATE PICK");
+                    return false;
+                }
+            });
         }
 
         public void setTime() {
-            TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+            TimePickerDialog timePickerDialog = new TimePickerDialog((DetailsActivity)context, new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     String amPm;
@@ -165,6 +195,15 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                     Log.e(TAG, "Place not found: " + statusCode);
                 }
             });
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            Calendar mCalender = Calendar.getInstance();
+            mCalender.set(Calendar.YEAR,year);
+            mCalender.set(Calendar.MONTH,month);
+            mCalender.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+            etDate.setText(DateFormat.getDateInstance(DateFormat.FULL).format(mCalender.getTime()));
         }
 
 
