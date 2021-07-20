@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.CitySlicker" parent="Theme.AppCompat.DayNight.NoActionBar">
+   <style name="Theme.CitySlicker" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/colorBottom</item>
@@ -29,4 +29,5 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">15dp</item>
     </style>
+
 </resources>

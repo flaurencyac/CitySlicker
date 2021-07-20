@@ -12,6 +12,7 @@ import java.util.Date;
 @ParseClassName("Trip")
 public class Trip extends ParseObject {
     public static final String KEY_PLACES = "places";
+    public static final String KEY_NAME = "tripName";
     public static final String KEY_COLLABORATORS = "collaborators";
     public static final String KEY_OWNER = "owner";
     public static final String KEY_START_DATE = "startDate";
@@ -20,7 +21,9 @@ public class Trip extends ParseObject {
     public static final String KEY_BUDGET = "budget";
     public static final String KEY_REGIONS = "regions";
 
-    //public void setPlaces(JSONArray place) { update to add one more place to list); }
+    public void setPlaces(JSONArray allPlaces) { put(KEY_PLACES, allPlaces); }
+
+    public JSONArray getPlaces() {return getJSONArray(KEY_PLACES); }
 
     public void setCollaborators(JSONArray collaborators) {put(KEY_COLLABORATORS, collaborators);}
 
@@ -35,5 +38,7 @@ public class Trip extends ParseObject {
     public void setBudget(Integer budget) {put(KEY_BUDGET, budget);}
 
     public void setRegions(JSONArray cities) {put(KEY_REGIONS, cities);}
+
+    public void setTripName(String name) {put(KEY_NAME, name);}
 
 }

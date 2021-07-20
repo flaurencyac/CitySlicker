@@ -135,7 +135,7 @@ public class ExploreFragment extends Fragment  {
         });
     }
 
-    public void moveCamera(LatLng latLng, float zoom, String title) {
+    private void moveCamera(LatLng latLng, float zoom, String title) {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         MarkerOptions options = new MarkerOptions().position(latLng).title(title);
         googleMap.addMarker(options);
@@ -167,16 +167,13 @@ public class ExploreFragment extends Fragment  {
 
     private void getLocationPermission() {
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ContextCompat.checkSelfPermission(getContext().getApplicationContext(), FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(getContext().getApplicationContext(), COURSE_LOCATION)==PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getContext().getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(getContext().getApplicationContext(), COURSE_LOCATION)==PackageManager.PERMISSION_GRANTED) {
                 locationPermissionsGranted = true;
                 initMap();
             } else {
                 ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
             }
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
-        }
     }
 
     @Override

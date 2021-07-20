@@ -35,8 +35,9 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import java.util.Arrays;
 import java.util.List;
 
-public class AddToTripPOIDialogFragment extends DialogFragment {
+public class AddToTripDialogFragment extends DialogFragment {
     private static final String TAG = "POIDialogFragment";
+    private static final String PARCEL_NAME = "place";
 
     private TextView tvPlaceName;
     private TextView tvRating;
@@ -50,23 +51,33 @@ public class AddToTripPOIDialogFragment extends DialogFragment {
     private Button btnAddToTrip;
     private ImageButton ibClose;
     protected Bitmap bitmap;
+    private AddToTripPOIDialogFragmentListener listener;
 
-    public AddToTripPOIDialogFragment() {}
+    private Boolean addToTrip;
+    private String placeId;
+    private String placeName;
+    private Place mPlace;
 
-    public static AddToTripPOIDialogFragment newInstance(PointOfInterest poi) {
-        AddToTripPOIDialogFragment frag = new AddToTripPOIDialogFragment();
+    public AddToTripDialogFragment() {}
+
+    public static AddToTripDialogFragment newInstance(PointOfInterest poi) {
+        AddToTripDialogFragment frag = new AddToTripDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable("place", (Parcelable) new PlaceParcelableObject(poi));
+        args.putParcelable(PARCEL_NAME, (Parcelable) new PlaceParcelableObject(poi));
         frag.setArguments(args);
         return frag;
     }
 
-    public static AddToTripPOIDialogFragment newInstance(Place place) {
-        AddToTripPOIDialogFragment frag = new AddToTripPOIDialogFragment();
+    public static AddToTripDialogFragment newInstance(Place place) {
+        AddToTripDialogFragment frag = new AddToTripDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable("place", (Parcelable) new PlaceParcelableObject(place));
+        args.putParcelable(PARCEL_NAME, (Parcelable) new PlaceParcelableObject(place));
         frag.setArguments(args);
         return frag;
+    }
+
+    public interface AddToTripPOIDialogFragmentListener {
+        void onFinishAddToTripPOIDialogFragment(Boolean addToTrip, String placeId, String placeName, Place place);
     }
 
     @Override
@@ -78,7 +89,7 @@ public class AddToTripPOIDialogFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_fragment_poi, container);
+        return inflater.inflate(R.layout.dialog_fragment_add_to_trip_poi, container);
     }
 
     @Override
@@ -96,21 +107,20 @@ public class AddToTripPOIDialogFragment extends DialogFragment {
         ratingBar = view.findViewById(R.id.ratingBar);
         btnAddToTrip = view.findViewById(R.id.btnAddToTrip);
         ibClose = view.findViewById(R.id.ibClose);
-
         ibClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addToTrip = false;
                 dismiss();
             }
         });
         btnAddToTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: pass the place/poi as a parcel and init the New Trip Form Fragment
-                //  Create/save the parse place object when user clicks "add to trip"
-                //  if there doesn't already exist a place with the same trip owner and placeID
-                //  add objectID or placeID to places array within Trip class
-
+                addToTrip = true;
+                listener = (AddToTripPOIDialogFragmentListener) getActivity();
+                listener.onFinishAddToTripPOIDialogFragment(addToTrip, placeId, placeName, mPlace);
+                dismiss();
             }
         });
 
@@ -122,6 +132,9 @@ public class AddToTripPOIDialogFragment extends DialogFragment {
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeParcelableObject.getId(), placeFields);
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
+            mPlace = place;
+            placeId = place.getId();
+            placeName = place.getName();
             tvPlaceName.setText(place.getName());
             fetchPhoto(place.getPhotoMetadatas());
             tvAddress.setText(place.getAddress());

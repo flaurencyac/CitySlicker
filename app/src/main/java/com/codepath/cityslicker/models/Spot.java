@@ -12,14 +12,14 @@ import com.parse.ParseObject;
 
 import java.util.Date;
 
-@ParseClassName("Place")
-public class Place extends ParseObject {
-    public static final String KEY_PLACE_NAME = "placeName";
-    public static final String KEY_ID = "placeID";
+@ParseClassName("Spot")
+public class Spot extends ParseObject {
+    public static final String KEY_PLACE_NAME = "name";
+    public static final String KEY_ID = "placeId";
     public static final String KEY_TRIP = "trip";
     public static final String KEY_DATE = "date";
     public static final String KEY_TIME = "time";
-    public static final String KEY_REGION = "region";
+    public static final String KEY_REGION = "regionId";
 
     public String getName() {return getString(KEY_PLACE_NAME); }
 
@@ -31,7 +31,7 @@ public class Place extends ParseObject {
 
     public ParseObject getTrip() {return getParseObject(KEY_TRIP);}
 
-    public void setStrip(ParseObject trip) {put(KEY_TRIP, trip); }
+    public void setTrip(ParseObject trip) {put(KEY_TRIP, trip); }
 
     public Date getDate() {return getDate(KEY_DATE);}
 
@@ -41,8 +41,8 @@ public class Place extends ParseObject {
 
     public void setTime(String time) {put(KEY_TIME, time);}
 
-    public String getRegions() {return getString(KEY_REGION);}
+    public String getCityId() {return getString(KEY_REGION);}
 
-    public void setRegions(String regions) {put(KEY_REGION, regions);}
+    public void setCityId(String cityId) {put(KEY_REGION, cityId);}
 
 }

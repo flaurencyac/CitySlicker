@@ -23,6 +23,7 @@ import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.PlaceParcelableObject;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.ui.compose.ComposeFragment;
+import com.codepath.cityslicker.databinding.DialogFragmentPoiBinding;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.api.ApiException;
@@ -146,10 +147,10 @@ public class POIDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 // TODO: pass the place/poi as a parcel and init the list of trips screen
-                //Intent intent = new Intent(getContext(), AllTrips.class);
-                //intent.putExtra("place", placeParcelableObject);
-                //  Create/save the parse place object add it to the trip once the user selects a trip
-                //  go to edit trip details screen and see the new place
+                // TODO : Intent intent = new Intent(getContext(), AllTrips.class);
+                // TODO : intent.putExtra("place", placeParcelableObject);
+                // TODO:  Create/save the parse place object add it to the trip once the user selects a trip
+                // TODO : go to edit trip details screen and see the new place
             }
         });
     }

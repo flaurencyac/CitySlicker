@@ -30,8 +30,8 @@ import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.MainActivity;
 import com.codepath.cityslicker.PlaceParcelableObject;
 import com.codepath.cityslicker.R;
+import com.codepath.cityslicker.TripParcelableObject;
 import com.codepath.cityslicker.activities.MapsActivity;
-import com.codepath.cityslicker.databinding.FragmentComposeBinding;
 import com.codepath.cityslicker.databinding.FragmentComposeBinding;
 import com.codepath.cityslicker.models.Trip;
 import com.google.android.gms.common.api.ApiException;
@@ -58,8 +58,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 public class ComposeFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "ComposeFragment";
@@ -71,6 +69,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private FragmentComposeBinding binding;
     private AutoCompleteTextView actvCollaborators;
     private AutocompleteSupportFragment autocompleteSupportFragment;
+    private com.codepath.cityslicker.DatePicker datePickerDialogFragment;
     private TextView tvCities;
     private TextView tvFromDate;
     private TextView tvToDate;
@@ -83,15 +82,14 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private ArrayList<String> cityIDs = new ArrayList<>();
     private static ArrayList<String> usersList = new ArrayList<>();
     private ArrayList<String> regions = new ArrayList<>();
-    private String selectedDate;
-    private com.codepath.cityslicker.DatePicker datePickerDialogFragment;
     private Boolean fromDateBool = false;
     private Boolean toDateBool = false;
-    //private ArrayList<String> preferences = new ArrayList<>();
+    private String selectedDate;
     private Integer budget = 1;
     private Date startDate;
     private Date endDate;
     private String tripId;
+    private Trip trip;
 
     //  TODO: if there is a parcel:
     //   placeParcelableObject = (PlaceParcelableObject) Parcels.unwrap(getIntent().getParcelableExtra("place"));
@@ -191,12 +189,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 } else if (etTripName.getText().equals("")) {
                     Toast.makeText(getContext(), "Your trip must have a name!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), "Created Trip", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getContext(), MapsActivity.class);
                     createTrip();
-                    intent.putExtra("tripId", tripId);
-                    resetForm();
-                    startActivity(intent);
                 }
             }
         });
@@ -276,12 +269,13 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     }
 
     private void createTrip() {
-        Trip trip = new Trip();
+        trip = new Trip();
         trip.setBudget(budget);
         // the subList removes the last elem of the array because the last elem of the array is " " empty string
         if (collaborators.size() >= 2) {
             trip.setCollaborators(new JSONArray(collaborators.subList(0, collaborators.size()-1)));
         }
+        trip.setTripName(etTripName.getText().toString());
         trip.setOwner(ParseUser.getCurrentUser());
         trip.setEndDate(endDate);
         trip.setStartDate(startDate);
@@ -291,13 +285,21 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void done(ParseException e) {
                 if (e==null){
+                    Toast.makeText(getContext(), "Created Trip", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "Trip Created");
+                    tripId = trip.getObjectId();
+                    resetForm();
+                    Intent intent = new Intent(getContext(), MapsActivity.class);
+                    intent.putExtra("tripId", tripId);
+                    TripParcelableObject parcel = new TripParcelableObject();
+                    parcel.setTrip(trip);
+                    intent.putExtra("tripObj", Parcels.wrap(parcel));
+                    startActivity(intent);
                 }else{
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        tripId = trip.getObjectId();
     }
 
 }

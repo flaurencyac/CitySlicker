@@ -34,18 +34,4 @@ tools:context=".ui.explore.ExploreFragment">
         android:text="Next"
         android:textColor="#FFFFFF" />
 
-
-    <!--    <FrameLayout-->
-<!--        android:id="@+id/standardBottomSheet"-->
-<!--        android:layout_below="@+id/map"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        style="?attr/bottomSheetStyle"-->
-<!--        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">-->
-
-<!--        &lt;!&ndash; Bottom Sheet contents &ndash;&gt;-->
-<!--        -->
-
-<!--    </FrameLayout>-->
-
 </RelativeLayout>

@@ -27,6 +27,12 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final String HEALTH_PREFERENCE = "health";
+    private static final String SHOPPING_PREFERENCE = "shopping";
+    private static final String RESTAURANT_PREFERENCE = "restaurants";
+    private static final String ADULT_PREFERENCE = "adult";
+    private static final String FAMILY_PREFERENCE = "family";
+    private static final String ATTRACTIONS_PREFERENCE = "attractions";
     private ActivityMainBinding binding;
     public static ArrayList<String> preferences = new ArrayList<>();
 
@@ -72,55 +78,55 @@ public class MainActivity extends AppCompatActivity {
             case R.id.cbRestaurants:
                 if (checked) {
                     Toast.makeText(this, "Added Restaurants to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add("restaurants");
+                    preferences.add(RESTAURANT_PREFERENCE);
                 } else {
                     Toast.makeText(this, "Removed Restaurants from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove("restaurants");
+                    preferences.remove(RESTAURANT_PREFERENCE);
                 }
                 break;
             case R.id.cbHealth:
                 if (checked) {
                     Toast.makeText(this, "Added Health to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add("health");
+                    preferences.add(HEALTH_PREFERENCE);
                 } else {
                     Toast.makeText(this, "Removed Health from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove("health");
+                    preferences.remove(HEALTH_PREFERENCE);
                 }
                 break;
             case R.id.cbAdult:
                 if (checked) {
                     Toast.makeText(this, "Added Adult to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add("adult");
+                    preferences.add(ADULT_PREFERENCE);
                 } else {
                     Toast.makeText(this, "Removed Adult from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove("adult");
+                    preferences.remove(ADULT_PREFERENCE);
                 }
                 break;
             case R.id.cbFamilyFriendly:
                 if (checked) {
                     Toast.makeText(this, "Added Family Friendly to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add("family");
+                    preferences.add(FAMILY_PREFERENCE);
                 } else {
                     Toast.makeText(this, "Removed Family Friendly from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove("family");
+                    preferences.remove(FAMILY_PREFERENCE);
                 }
                 break;
             case R.id.cbAttractions:
                 if (checked) {
                     Toast.makeText(this, "Added Tourist Attractions to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add("attractions");
+                    preferences.add(ATTRACTIONS_PREFERENCE);
                 } else {
                     Toast.makeText(this, "Removed Tourist Attractions from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove("attractions");
+                    preferences.remove(ATTRACTIONS_PREFERENCE);
                 }
                 break;
             case R.id.cbShopping:
                 if (checked) {
                     Toast.makeText(this, "Added Shopping to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add("shopping");
+                    preferences.add(SHOPPING_PREFERENCE);
                 } else {
                     Toast.makeText(this, "Removed Shopping from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove("shopping");
+                    preferences.remove(SHOPPING_PREFERENCE);
                 }
                 break;
         }
