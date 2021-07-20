@@ -8,12 +8,23 @@
 
     <Spinner
         android:id="@+id/citiesSpinner"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_width="160dp"
-        android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/FrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="589dp"
+        android:layout_below="@+id/citiesSpinner"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp">
+
+    </FrameLayout>
 </RelativeLayout>

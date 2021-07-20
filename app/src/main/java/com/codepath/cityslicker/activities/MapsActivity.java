@@ -70,10 +70,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> cityNames = new ArrayList<>();
     private ArrayList<Place> cityList = new ArrayList<>();
     private Integer currentCityIndex = 0;
-    private ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
+
     private ArrayList<Place> placesInCurrentCity = new ArrayList<>();
+    private ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
     private ArrayList<String> placesIdsCurrentCity = new ArrayList<>();
     private ArrayList<ArrayList<String>> allPlaceIds = new ArrayList<ArrayList<String>>();
+    private ArrayList<Spot> spotsInCurrentCity = new ArrayList<Spot>();
+    private ArrayList<ArrayList<Spot>> allSpots = new ArrayList<ArrayList<Spot>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +141,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setLatLngBoundary(LatLng latLng) {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, BOUNDARY_ZOOM));
         latLngBoundary = googleMap.getProjection().getVisibleRegion().latLngBounds;
-        // TODO DEBUG: googleMap.setLatLngBoundsForCameraTarget(latLngBoundary);
         autocompleteSupportFragment.setLocationRestriction(RectangularBounds.newInstance(latLngBoundary));
     }
 
@@ -198,6 +200,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         allPlaces.add(placeListClone);
         ArrayList<String> placeIdsClone = new ArrayList<>(placesIdsCurrentCity);
         allPlaceIds.add(placeIdsClone);
+        ArrayList<Spot> spotsClone = new ArrayList<>(spotsInCurrentCity);
+        allSpots.add(spotsClone);
+        spotsInCurrentCity.clear();
         placesInCurrentCity.clear();
         placesIdsCurrentCity.clear();
     }
@@ -205,9 +210,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void updateTripWithAllPlaces() {
         allPlaces.add(placesInCurrentCity);
         allPlaceIds.add(placesIdsCurrentCity);
+        allSpots.add(spotsInCurrentCity);
         ParseQuery<Trip> query  = ParseQuery.getQuery("Trip");
         query.getInBackground(tripId, (object, e) -> {
-            object.setPlaces(new JSONArray(allPlaces));
+            object.setPlaces(new JSONArray(allSpots));
             object.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -216,6 +222,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     intent.putExtra("tripId", tripId);
                     TripParcelableObject parcel = new TripParcelableObject();
                     parcel.setTrip(trip);
+                    parcel.setSpotsInParcel(allSpots);
+                    parcel.setPlacesInParcel(allPlaces);
                     intent.putExtra("tripObj", Parcels.wrap(parcel));
                     intent.putStringArrayListExtra("cityNames", cityNames);
                     intent.putStringArrayListExtra("cityIdList", cityIdList);
@@ -248,6 +256,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
             placesInCurrentCity.add(place);
             placesIdsCurrentCity.add(place.getId());
+            spotsInCurrentCity.add(spot);
+
         }
     }
 }
