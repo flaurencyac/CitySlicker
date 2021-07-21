@@ -10,6 +10,7 @@ import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
+import java.util.Comparator;
 import java.util.Date;
 
 @ParseClassName("Spot")
@@ -44,5 +45,23 @@ public class Spot extends ParseObject {
     public String getCityId() {return getString(KEY_REGION);}
 
     public void setCityId(String cityId) {put(KEY_REGION, cityId);}
+
+    // if 0: they are equal, if int > 0 s1 comes after s2, if int < 0 s1 comes before s2
+    public static Comparator<Spot> spotDateTimeComparator = new Comparator<Spot>() {
+        @Override
+        public int compare(Spot s1, Spot s2) {
+            if (s1.getDate() == null && s1.getTime() == null) {
+                return -1;
+            }
+            if (s2.getDate() == null && s2.getTime() == null) {
+                return 1;
+            }
+            if (s1.getDate() == s2.getDate()) {
+                return s1.getTime().compareTo(s2.getTime());
+            } else {
+                return s1.getDate().compareTo(s2.getDate());
+            }
+        }
+    };
 
 }

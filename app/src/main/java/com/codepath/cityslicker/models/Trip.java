@@ -31,6 +31,10 @@ public class Trip extends ParseObject {
 
     public void setStartDate(Date date) {put(KEY_START_DATE, date);}
 
+    public Date getStartDate() {return getDate(KEY_START_DATE);}
+
+    public Date getEndDate() {return getDate(KEY_END_DATE);}
+
     public void setEndDate(Date date) {put(KEY_END_DATE, date);}
 
     public void setPreferences(JSONArray preferences) {put(KEY_PREFERENCES, preferences);}

@@ -69,4 +69,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     // for Cardview
     implementation "androidx.cardview:cardview:1.0.0"
+    // for datetime picker
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 }

@@ -1,5 +1,6 @@
 package com.codepath.cityslicker.fragments;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.codepath.cityslicker.R;
@@ -23,6 +25,7 @@ import com.google.android.libraries.places.api.model.Place;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class EditTripFragment extends Fragment {
     private static final String TAG = "EditTripFragment";
@@ -34,6 +37,7 @@ public class EditTripFragment extends Fragment {
     private ArrayList<Place> placesInCity = new ArrayList<Place>();
     private ArrayList<Spot> spots = new ArrayList<Spot>();
     private Trip trip;
+    private EditText etDate;
 
     public EditTripFragment(Context context, ArrayList<Place> placesInCity, ArrayList<Spot> spots, String tripId, Trip trip) {
         this.context = context;
@@ -54,10 +58,18 @@ public class EditTripFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvPlaces = view.findViewById(R.id.rvPlaces);
+
         LinearLayoutManager llm = new LinearLayoutManager(context);
         rvPlaces.setLayoutManager(llm);
         adapter = new PlaceAdapter(context, placesInCity, spots, tripId, trip);
         rvPlaces.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
     }
+
+
+
+
+
+
 }

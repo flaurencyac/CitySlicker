@@ -1,23 +1,30 @@
 package com.codepath.cityslicker.adapters;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.cityslicker.BuildConfig;
@@ -40,9 +47,15 @@ import com.parse.SaveCallback;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> {
     static final String TAG = "PlaceAdapter";
@@ -58,6 +71,20 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         this.places = places;
         this.tripId = tripId;
         this.trip = trip;
+        sortSpotsAndPlaces();
+    }
+
+    public void sortSpotsAndPlaces() {
+        Collections.sort(spots, Spot.spotDateTimeComparator);
+        ArrayList<Place> sortedPlaces = new ArrayList<Place>();
+        for (int i= 0; i <spots.size(); i++) {
+            for (int j=0; j<places.size(); j++) {
+                if (spots.get(i).getPlaceID().equals(places.get(j).getId())) {
+                    sortedPlaces.add(places.get(j));
+                }
+            }
+        }
+        places=sortedPlaces;
     }
 
     @NonNull
@@ -79,7 +106,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         return  places.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements DatePickerDialog.OnDateSetListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
         private TextView tvPlaceName;
         private EditText etDate;
@@ -87,9 +114,17 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         private Button btnRemove;
         private ImageView ivImage;
         private TextView tvAddress;
-
-        private com.codepath.cityslicker.DatePicker datePickerDialogFragment;
+        private Calendar myCalendar = Calendar.getInstance();
+        private DatePickerDialog datePickerDialog;
+        private TimePickerDialog timePickerDialog;
         private Bitmap bitmap;
+        private Integer mYear;
+        private Integer mMonth;
+        private Integer mDay;
+        private Date selectedDate;
+
+        private Boolean firstDatePicker = true;
+        private Boolean firstTimePicker = true;
 
         public ViewHolder (View itemView) {
             super(itemView);
@@ -102,6 +137,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
             tvAddress = itemView.findViewById(R.id.tvAddress);
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         public void bind(Place place) {
             tvPlaceName.setText(place.getName());
             tvAddress.setText(place.getAddress());
@@ -111,67 +147,88 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                 public void onClick(View v) {
                     // TODO : remove the cardview, update the adapter notify of data set change
                     // TODO : update the list of spots in Parse for that trip
-                    // TODO : remove the spot object rom Parse
+                    // TODO : remove the spot object from Parse
                     places.remove(getAdapterPosition());
+                    spots.remove(getAdapterPosition());
                     notifyItemRemoved(getAdapterPosition());
-
-
                 }
             });
             etTime.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    setTime();
-                    return false;
+                    firstTimePicker = true;
+                    timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            if (firstTimePicker) {
+                                firstTimePicker = false;
+                                String timeOfDay;
+                                if (hourOfDay < 12) {
+                                    timeOfDay = "AM";
+                                } else {
+                                    timeOfDay = "PM";
+                                }
+                                etTime.setText(String.format("%02d:%02d %s", hourOfDay, minute, timeOfDay));
+                                saveDateTime();
+                            }
+                        }
+                    }, 0,0 , false);
+                    timePickerDialog.show();
+                    return true;
                 }
             });
-            etTime.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setTime();
-                }
-            });
-            datePickerDialogFragment = new com.codepath.cityslicker.DatePicker();
-            //datePickerDialogFragment.setTargetFragment((EditTripFragment) context, 0);
             etDate.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    datePickerDialogFragment.show(((DetailsActivity)context).getSupportFragmentManager(), "DATE PICK");
-                    return false;
+                    firstDatePicker = true;
+                    final Calendar currentDate = Calendar.getInstance();
+                    datePickerDialog = new DatePickerDialog(context, R.style.DatePicker, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            if (firstDatePicker) {
+                                firstDatePicker = false;
+                                mYear = year;
+                                mDay = dayOfMonth;
+                                mMonth = month;
+                                etDate.setText(String.format("%d/%d/%d", mMonth, mDay, mYear));
+                                Calendar mCalender = Calendar.getInstance();
+                                mCalender.set(Calendar.YEAR,year);
+                                mCalender.set(Calendar.MONTH,month);
+                                mCalender.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+                                selectedDate = mCalender.getTime();
+                                saveDateTime();
+                            }
+                        }
+                    }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
+                    datePickerDialog.getDatePicker().setMinDate(trip.getStartDate().getTime());
+                    datePickerDialog.getDatePicker().setMaxDate(trip.getEndDate().getTime());
+                    datePickerDialog.show();
+                    return true;
                 }
             });
         }
 
-        public void setTime() {
-            TimePickerDialog timePickerDialog = new TimePickerDialog((DetailsActivity)context, new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    String amPm;
-                    if (hourOfDay >= 12) {
-                        amPm = "PM";
-                    } else {
-                        amPm = "AM";
+        public void saveDateTime() {
+            if (selectedDate==null) {
+                Toast.makeText(context, "Please choose a date!", Toast.LENGTH_SHORT).show();
+            } else if (etTime.getText().toString().equals("")) {
+                Toast.makeText(context, "Please choose a time!", Toast.LENGTH_SHORT).show();
+            } else {
+                Spot spot = spots.get(getAdapterPosition());
+                spot.setDate(selectedDate);
+                spot.setTime(etTime.getText().toString());
+                spot.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            // TODO : notify the adapter of a item updated
+                            Log.e(TAG, "Unable to save spot time", e);
+                        } else {
+                            Log.i(TAG, "Saved spot time!");
+                        }
                     }
-                    etTime.setText(String.format("%02d:%02d", hourOfDay, minute) + amPm);
-                    saveTime();
-                }
-            }, 0, 0, false);
-            timePickerDialog.show();
-        }
-
-        public void saveTime() {
-            Spot spot = spots.get(getAdapterPosition());
-            spot.setTime(etTime.getText().toString());
-            spot.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        Log.e(TAG, "Unable to save spot time", e);
-                    } else {
-                        Log.i(TAG, "Saved spot time!");
-                    }
-                }
-            });
+                });
+            }
         }
 
         private void fetchPhoto(List<PhotoMetadata> photoMetadataList) {
@@ -197,15 +254,21 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
             });
         }
 
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            Calendar mCalender = Calendar.getInstance();
-            mCalender.set(Calendar.YEAR,year);
-            mCalender.set(Calendar.MONTH,month);
-            mCalender.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-            etDate.setText(DateFormat.getDateInstance(DateFormat.FULL).format(mCalender.getTime()));
-        }
-
-
+//        @Override
+//        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+//            if (firstDatePicker) {
+//                firstDatePicker = false;
+//                mYear = year;
+//                mDay = dayOfMonth;
+//                mMonth = month;
+//                etDate.setText(String.format("%d/%d/%d", mMonth, mDay, mYear));
+//                Calendar mCalender = Calendar.getInstance();
+//                mCalender.set(Calendar.YEAR,year);
+//                mCalender.set(Calendar.MONTH,month);
+//                mCalender.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+//                selectedDate = mCalender.getTime();
+//                saveDateTime();
+//            }
+//        }
     }
 }

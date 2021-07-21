@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 public class ProfileFragment extends Fragment {
     public static final String TAG = "ProfileFragment";
     public final static int PICK_PHOTO_CODE = 1000;
+    private static final int NUM_PAGES = 2;
 
     private ProfileViewModel profileViewModel;
     private FragmentProfileBinding binding;
@@ -51,7 +53,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvUsername;
     private ImageView ivProfilePicture;
     private TabLayout tabLayout;
-    private ViewPager2 viewPager2;
+    private ViewPager2 viewPager;
     private TabItem tabFriends;
     private TabItem tabTrips;
 
@@ -66,7 +68,7 @@ public class ProfileFragment extends Fragment {
         tvUpdatePP = binding.tvUpdatePP;
         tvUsername = binding.tvUsername;
         tabLayout = binding.tabLayout;
-        viewPager2 = binding.viewPager;
+        viewPager = binding.viewPager;
         ivProfilePicture = binding.ivProfilePicture;
 
         return root;

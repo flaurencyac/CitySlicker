@@ -54,7 +54,7 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        this.context = getApplicationContext();
+        context = DetailsActivity.this;
 
         TripParcelableObject parcel = Parcels.unwrap(getIntent().getParcelableExtra("tripObj"));
         trip = parcel.getTrip();
@@ -100,4 +100,5 @@ public class DetailsActivity extends AppCompatActivity {
         ft.replace(R.id.FrameLayout, new EditTripFragment(context, allPlaces.get(position), allSpots.get(position), tripId, trip));
         ft.commit();
     }
+
 }
