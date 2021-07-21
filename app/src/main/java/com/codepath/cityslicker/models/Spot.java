@@ -57,10 +57,19 @@ public class Spot extends ParseObject {
                 return 1;
             }
             if (s1.getDate() == s2.getDate()) {
-                return s1.getTime().compareTo(s2.getTime());
+                double t1 = extractDate(s1.getTime());
+                double t2 = extractDate(s2.getTime());
+                return Double.compare(t1, t2);
             } else {
                 return s1.getDate().compareTo(s2.getDate());
             }
+        }
+
+        public double extractDate(String timeString) {
+            double time;
+            time = Integer.parseInt(timeString.substring(0,2));
+            time += (Integer.parseInt(timeString.substring(3, 5)))/100;
+            return time;
         }
     };
 

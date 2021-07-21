@@ -253,22 +253,5 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                 }
             });
         }
-
-//        @Override
-//        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//            if (firstDatePicker) {
-//                firstDatePicker = false;
-//                mYear = year;
-//                mDay = dayOfMonth;
-//                mMonth = month;
-//                etDate.setText(String.format("%d/%d/%d", mMonth, mDay, mYear));
-//                Calendar mCalender = Calendar.getInstance();
-//                mCalender.set(Calendar.YEAR,year);
-//                mCalender.set(Calendar.MONTH,month);
-//                mCalender.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-//                selectedDate = mCalender.getTime();
-//                saveDateTime();
-//            }
-//        }
     }
 }
