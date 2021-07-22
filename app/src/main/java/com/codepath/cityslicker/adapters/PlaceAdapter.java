@@ -42,9 +42,11 @@ import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.textfield.TextInputLayout;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -107,6 +109,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private final String pattern = "MM/dd/yyyy HH:mm:ss";
+
         private CardView cardView;
         private TextView tvPlaceName;
         private EditText etDate;
@@ -114,7 +118,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         private Button btnRemove;
         private ImageView ivImage;
         private TextView tvAddress;
-        private Calendar myCalendar = Calendar.getInstance();
         private DatePickerDialog datePickerDialog;
         private TimePickerDialog timePickerDialog;
         private Bitmap bitmap;
@@ -145,14 +148,12 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
             btnRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO : remove the cardview, update the adapter notify of data set change
-                    // TODO : update the list of spots in Parse for that trip
-                    // TODO : remove the spot object from Parse
-                    places.remove(getAdapterPosition());
-                    spots.remove(getAdapterPosition());
-                    notifyItemRemoved(getAdapterPosition());
+                    removeSpotFromTrip();
                 }
             });
+            if (spots.get(getAdapterPosition()).getTime() != null) {
+                etTime.setText(spots.get(getAdapterPosition()).getTime());
+            }
             etTime.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -177,6 +178,11 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                     return true;
                 }
             });
+            if (spots.get(getAdapterPosition()).getDate() != null) {
+                DateFormat df = new SimpleDateFormat(pattern);
+                String formattedDate = df.format(spots.get(getAdapterPosition()).getDate()).substring(0,10);
+                etDate.setText(formattedDate);
+            }
             etDate.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -208,7 +214,29 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
             });
         }
 
-        public void saveDateTime() {
+        private void removeSpotFromTrip() {
+            ArrayList<ArrayList<String>> newPlacesList = Trip.parseForPlaces(trip.getPlaces());
+            for (int i = 0; i<newPlacesList.size(); i++) {
+                for (int j = 0; j<newPlacesList.get(i).size(); j++) {
+                    if (newPlacesList.get(i).get(j).equals(spots.get(getAdapterPosition()).getPlaceID())) {
+                        newPlacesList.get(i).remove(j);
+                    }
+                }
+            }
+            trip.setPlaces(new JSONArray(newPlacesList));
+            places.remove(getAdapterPosition());
+            notifyItemRemoved(getAdapterPosition());
+            spots.get(getAdapterPosition()).deleteInBackground(e -> {
+                if (e == null) {
+                    Log.i(TAG, "Deleted spot from Parse db");
+                } else {
+                    Log.e(TAG, "Failed to delete spot from Parse", e);
+                }
+            });
+            spots.remove(getAdapterPosition());
+        }
+
+        private void saveDateTime() {
             if (selectedDate==null) {
                 Toast.makeText(context, "Please choose a date!", Toast.LENGTH_SHORT).show();
             } else if (etTime.getText().toString().equals("")) {
@@ -221,7 +249,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                     @Override
                     public void done(ParseException e) {
                         if (e != null) {
-                            // TODO : notify the adapter of a item updated
                             Log.e(TAG, "Unable to save spot time", e);
                         } else {
                             Log.i(TAG, "Saved spot time!");

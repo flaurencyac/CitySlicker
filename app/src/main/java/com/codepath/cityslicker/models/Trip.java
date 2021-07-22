@@ -1,5 +1,6 @@
 package com.codepath.cityslicker.models;
 
+import com.google.android.libraries.places.api.model.Place;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -7,6 +8,8 @@ import com.parse.ParseUser;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 @ParseClassName("Trip")
@@ -23,7 +26,7 @@ public class Trip extends ParseObject {
 
     public void setPlaces(JSONArray allPlaces) { put(KEY_PLACES, allPlaces); }
 
-    public JSONArray getPlaces() {return getJSONArray(KEY_PLACES); }
+    public ArrayList<String> getPlaces() {return (ArrayList<String>) get(KEY_PLACES); }
 
     public void setCollaborators(JSONArray collaborators) {put(KEY_COLLABORATORS, collaborators);}
 
@@ -44,5 +47,16 @@ public class Trip extends ParseObject {
     public void setRegions(JSONArray cities) {put(KEY_REGIONS, cities);}
 
     public void setTripName(String name) {put(KEY_NAME, name);}
+
+    // Note: oneDimenLst has this format: ["[placeId1, placeId2, placeId3]", "[placeId1, placeId2]", "[placeId1, placeId2, placeId3]"]
+    public static ArrayList<ArrayList<String>> parseForPlaces(ArrayList<String> oneDimenLst) {
+        ArrayList<ArrayList<String>> placeIds = new ArrayList<ArrayList<String>>();
+        for(int i =0; i< oneDimenLst.size(); i++) {
+            String placesInCity = oneDimenLst.get(i).substring(1, oneDimenLst.get(i).length()-1);
+            ArrayList<String> placesInCityList = (ArrayList<String>) Arrays.asList(placesInCity.replaceAll(" ", "").split(","));
+            placeIds.add(placesInCityList);
+        }
+        return placeIds;
+    }
 
 }

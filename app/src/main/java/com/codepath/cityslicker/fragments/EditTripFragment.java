@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -37,7 +38,7 @@ public class EditTripFragment extends Fragment {
     private ArrayList<Place> placesInCity = new ArrayList<Place>();
     private ArrayList<Spot> spots = new ArrayList<Spot>();
     private Trip trip;
-    private EditText etDate;
+
 
     public EditTripFragment(Context context, ArrayList<Place> placesInCity, ArrayList<Spot> spots, String tripId, Trip trip) {
         this.context = context;
@@ -64,7 +65,6 @@ public class EditTripFragment extends Fragment {
         adapter = new PlaceAdapter(context, placesInCity, spots, tripId, trip);
         rvPlaces.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
     }
 
 

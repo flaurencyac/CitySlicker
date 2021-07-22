@@ -44,12 +44,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
     @NotNull
     @Override
     public Fragment createFragment(int position) {
-        switch(position) {
-            case 0:
-                return new EditTripFragment(context, places.get(position), spots.get(position), tripId, trip);
-            default:
-                return new EditTripFragment(context, places.get(0), spots.get(0), tripId, trip);
-        }
+        return new EditTripFragment(context, places.get(position), spots.get(position), tripId, trip);
     }
 
     @Override

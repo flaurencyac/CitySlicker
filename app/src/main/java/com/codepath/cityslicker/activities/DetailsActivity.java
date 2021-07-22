@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class DetailsActivity extends AppCompatActivity {
     private static final String TAG = "DetailsActivity";
 
     private Spinner citiesSpinner;
+    private Button btnDone;
     private Context context;
 
     private ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
@@ -67,6 +69,8 @@ public class DetailsActivity extends AppCompatActivity {
 
         frameLayout = findViewById(R.id.FrameLayout);
         citiesSpinner = findViewById(R.id.citiesSpinner);
+        btnDone = findViewById(R.id.btnDone);
+
         arrayAdapter = new ArrayAdapter<>(context, R.layout.support_simple_spinner_dropdown_item, cityNames);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -85,11 +89,16 @@ public class DetailsActivity extends AppCompatActivity {
                         selectFragment(position);
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 selectFragment(0);
 
+            }
+        });
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

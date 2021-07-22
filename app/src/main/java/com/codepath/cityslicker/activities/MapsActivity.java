@@ -264,7 +264,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             placesInCurrentCity.add(place);
             placesIdsCurrentCity.add(place.getId());
             spotsInCurrentCity.add(spot);
-
         }
     }
 }

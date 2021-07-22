@@ -27,4 +27,18 @@
         android:layout_marginTop="10dp">
 
     </FrameLayout>
+
+    <Button
+        android:id="@+id/btnDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/FrameLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="161dp"
+        android:layout_marginBottom="0dp"
+        android:backgroundTint="@color/cityBlue"
+        android:text="Finished!"
+        android:textColor="@color/white" />
 </RelativeLayout>
