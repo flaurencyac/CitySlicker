@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.codepath.cityslicker.MainActivity;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.TripParcelableObject;
 import com.codepath.cityslicker.adapters.FragmentAdapter;
@@ -25,6 +27,8 @@ import com.codepath.cityslicker.databinding.ActivityDetailsBinding;
 import com.codepath.cityslicker.fragments.EditTripFragment;
 import com.codepath.cityslicker.models.Spot;
 import com.codepath.cityslicker.models.Trip;
+import com.codepath.cityslicker.ui.explore.ExploreFragment;
+import com.codepath.cityslicker.ui.profile.ProfileFragment;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -98,7 +102,8 @@ public class DetailsActivity extends AppCompatActivity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent intent = new Intent(context, MainActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -224,6 +224,12 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                 }
             }
             trip.setPlaces(new JSONArray(newPlacesList));
+            trip.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+
+                }
+            });
             places.remove(getAdapterPosition());
             notifyItemRemoved(getAdapterPosition());
             spots.get(getAdapterPosition()).deleteInBackground(e -> {
@@ -264,21 +270,22 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
             if (photoMetadataList == null || photoMetadataList.isEmpty()) {
                 Log.i(TAG, "No photo metadata.");
                 bitmap = null;
+            } else {
+                final PhotoMetadata photoMetadata = photoMetadataList.get(0);
+                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata).build();
+                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                    bitmap = fetchPhotoResponse.getBitmap();
+                    ivImage.setImageBitmap(bitmap);
+                    Log.i(TAG, "photo fetched");
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        final ApiException apiException = (ApiException) exception;
+                        Log.e(TAG, "Place not found: " + exception.getMessage());
+                        final int statusCode = apiException.getStatusCode();
+                        Log.e(TAG, "Place not found: " + statusCode);
+                    }
+                });
             }
-            final PhotoMetadata photoMetadata = photoMetadataList.get(0);
-            final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata).build();
-            placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-                bitmap = fetchPhotoResponse.getBitmap();
-                ivImage.setImageBitmap(bitmap);
-                Log.i(TAG, "photo fetched");
-            }).addOnFailureListener((exception) -> {
-                if (exception instanceof ApiException) {
-                    final ApiException apiException = (ApiException) exception;
-                    Log.e(TAG, "Place not found: " + exception.getMessage());
-                    final int statusCode = apiException.getStatusCode();
-                    Log.e(TAG, "Place not found: " + statusCode);
-                }
-            });
         }
     }
 }
