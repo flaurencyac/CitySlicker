@@ -72,5 +72,4 @@ public class Spot extends ParseObject {
             return time;
         }
     };
-
 }

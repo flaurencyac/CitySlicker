@@ -71,4 +71,6 @@ dependencies {
     implementation "androidx.cardview:cardview:1.0.0"
     // for datetime picker
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
+    // for expanding bottom sheet
+    implementation 'com.google.android.material:material:1.5.0-alpha01'
 }

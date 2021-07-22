@@ -27,14 +27,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private static final String HEALTH_PREFERENCE = "health";
-    private static final String SHOPPING_PREFERENCE = "shopping";
-    private static final String RESTAURANT_PREFERENCE = "restaurants";
-    private static final String ADULT_PREFERENCE = "adult";
-    private static final String FAMILY_PREFERENCE = "family";
-    private static final String ATTRACTIONS_PREFERENCE = "attractions";
     private ActivityMainBinding binding;
-    public static ArrayList<String> preferences = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,66 +63,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return true;
-    }
-
-    public void onCheckboxClicked(View view) {
-        boolean checked = ((CheckBox) view).isChecked();
-        switch(view.getId()) {
-            case R.id.cbRestaurants:
-                if (checked) {
-                    Toast.makeText(this, "Added Restaurants to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add(RESTAURANT_PREFERENCE);
-                } else {
-                    Toast.makeText(this, "Removed Restaurants from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove(RESTAURANT_PREFERENCE);
-                }
-                break;
-            case R.id.cbHealth:
-                if (checked) {
-                    Toast.makeText(this, "Added Health to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add(HEALTH_PREFERENCE);
-                } else {
-                    Toast.makeText(this, "Removed Health from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove(HEALTH_PREFERENCE);
-                }
-                break;
-            case R.id.cbAdult:
-                if (checked) {
-                    Toast.makeText(this, "Added Adult to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add(ADULT_PREFERENCE);
-                } else {
-                    Toast.makeText(this, "Removed Adult from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove(ADULT_PREFERENCE);
-                }
-                break;
-            case R.id.cbFamilyFriendly:
-                if (checked) {
-                    Toast.makeText(this, "Added Family Friendly to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add(FAMILY_PREFERENCE);
-                } else {
-                    Toast.makeText(this, "Removed Family Friendly from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove(FAMILY_PREFERENCE);
-                }
-                break;
-            case R.id.cbAttractions:
-                if (checked) {
-                    Toast.makeText(this, "Added Tourist Attractions to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add(ATTRACTIONS_PREFERENCE);
-                } else {
-                    Toast.makeText(this, "Removed Tourist Attractions from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove(ATTRACTIONS_PREFERENCE);
-                }
-                break;
-            case R.id.cbShopping:
-                if (checked) {
-                    Toast.makeText(this, "Added Shopping to preferences", Toast.LENGTH_SHORT).show();
-                    preferences.add(SHOPPING_PREFERENCE);
-                } else {
-                    Toast.makeText(this, "Removed Shopping from preferences", Toast.LENGTH_SHORT).show();
-                    preferences.remove(SHOPPING_PREFERENCE);
-                }
-                break;
-        }
     }
 
 }

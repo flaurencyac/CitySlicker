@@ -2,16 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rlPlaceDetailDialog"
-    android:layout_width="350dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
     android:orientation="vertical"
-    tools:context=".fragments.POIDialogFragment">
+    tools:context=".activities.MapsActivity">
 
     <TextView
         android:id="@+id/tvPlaceName"
-        android:layout_width="311dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -107,8 +105,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="false"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginStart="131dp"
+        android:layout_marginTop="9dp"
         android:scaleType="centerCrop"
         tools:src="@tools:sample/avatars" />
 
@@ -138,19 +136,6 @@
         android:text="Add to Trip"
         android:textColor="#FFFFFF" />
 
-
-    <ImageButton
-        android:id="@+id/ibClose"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="2dp"
-        android:backgroundTint="@color/cityBlue"
-        android:src="@drawable/quantum_ic_clear_grey600_24"
-        android:tint="#FFFFFF" />
-
     <TextView
         android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
@@ -160,7 +145,7 @@
         android:layout_alignParentBottom="false"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="134dp"
+        android:layout_marginBottom="0dp"
         android:textColor="@color/black"
         tools:text="$$$" />
 

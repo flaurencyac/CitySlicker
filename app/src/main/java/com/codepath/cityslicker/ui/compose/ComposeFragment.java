@@ -76,8 +76,14 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private Button btnFromDate;
     private Button btnToDate;
     private SeekBar seekBar;
+    private SeekBar sbAdult;
+    private SeekBar sbFamily;
+    private SeekBar sbFood;
+    private SeekBar sbAttractions;
+    private SeekBar sbShopping;
     private Button btnCreateTrip;
 
+    public static ArrayList<String> preferences = new ArrayList<>();
     private ArrayList<String> collaborators = new ArrayList<>();
     private ArrayList<String> cityIDs = new ArrayList<>();
     private static ArrayList<String> usersList = new ArrayList<>();
@@ -90,6 +96,11 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private Date endDate;
     private String tripId;
     private Trip trip;
+    private Integer adultPref;
+    private Integer familyPref;
+    private Integer foodPref;
+    private Integer attractionsPref;
+    private Integer shoppingPref;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         composeViewModel = new ViewModelProvider(this).get(ComposeViewModel.class);
@@ -102,6 +113,11 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         btnToDate = binding.btnToDate;
         tvCities = binding.tvCities;
         seekBar = binding.seekBar;
+        sbAdult = binding.sbAdult;
+        sbAttractions = binding.sbAttractions;
+        sbFamily = binding.sbFamily;
+        sbFood = binding.sbFood;
+        sbShopping = binding.sbShopping;
         btnCreateTrip = binding.btnCreateTrip;
 
         autocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -165,11 +181,59 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 Toast.makeText(getContext(), "Budget changed to: " + budget, Toast.LENGTH_SHORT).show();
             }
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+        sbShopping.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                shoppingPref = sbShopping.getProgress();
             }
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+        sbFood.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                foodPref = sbFood.getProgress();
             }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+        sbFamily.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                familyPref = sbFamily.getProgress();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+        sbAdult.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                adultPref = sbAdult.getProgress();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+        sbAttractions.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                attractionsPref = sbAttractions.getProgress();
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
         });
         btnCreateTrip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -253,7 +317,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         etTripName.setText("");
         tvCities.setText("Cities: ");
         tvCollaborators.setText("Collaborators: ");
-        MainActivity.preferences.clear();
         seekBar.setProgress(0);
         tvFromDate.setText("From: ");
         tvToDate.setText("To: ");
@@ -269,12 +332,16 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         if (collaborators.size() >= 2) {
             trip.setCollaborators(new JSONArray(collaborators.subList(0, collaborators.size()-1)));
         }
+        trip.setFamilyPreference(sbFamily.getProgress());
+        trip.setFoodPreference(sbFood.getProgress());
+        trip.setAdultPreference(sbAdult.getProgress());
+        trip.setAttractionsPreference(sbAttractions.getProgress());
+        trip.setShoppingPreference(sbShopping.getProgress());
         trip.setTripName(etTripName.getText().toString());
         trip.setOwner(ParseUser.getCurrentUser());
         trip.setEndDate(endDate);
         trip.setStartDate(startDate);
         trip.setRegions(new JSONArray(cityIDs));
-        trip.setPreferences(new JSONArray(MainActivity.preferences));
         trip.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -295,5 +362,4 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             }
         });
     }
-
 }

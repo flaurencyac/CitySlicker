@@ -261,8 +261,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                     public void done(ParseException e) {
                         if (e != null) {
                             Log.e(TAG, "Unable to save spot time", e);
-                            sortSpotsAndPlaces();
-                            PlaceAdapter.this.notifyDataSetChanged();
                         } else {
                             Log.i(TAG, "Saved spot time!");
                         }

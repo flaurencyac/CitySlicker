@@ -3,11 +3,14 @@ package com.codepath.cityslicker.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.TripParcelableObject;
+import com.codepath.cityslicker.adapters.RecommendedAdapter;
 import com.codepath.cityslicker.fragments.AddToTripDialogFragment;
 import com.codepath.cityslicker.models.Spot;
 import com.codepath.cityslicker.models.Trip;
@@ -37,6 +41,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
@@ -51,6 +56,7 @@ import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AddToTripDialogFragment.AddToTripPOIDialogFragmentListener {
     private static final String TAG = "MapsActivity";
+
     private static final float BOUNDARY_ZOOM = 11f;
     private static final float CENTER_ZOOM = 15f;
     private final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
@@ -61,15 +67,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap googleMap;
     private PlacesClient placesClient;
     private SupportMapFragment supportMapFragment;
+    private RecyclerView rvRecommended;
+    private RecommendedAdapter adapter;
     private AutocompleteSupportFragment autocompleteSupportFragment;
 
     private Trip trip;
-    private static LatLngBounds latLngBoundary;
     private String tripId;
+    private static LatLngBounds latLngBoundary;
+    private Integer currentCityIndex = 0;
     private ArrayList<String> cityIdList = new ArrayList<>();
     private ArrayList<String> cityNames = new ArrayList<>();
     private ArrayList<Place> cityList = new ArrayList<>();
-    private Integer currentCityIndex = 0;
 
     private ArrayList<Place> placesInCurrentCity = new ArrayList<>();
     private ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
@@ -79,6 +87,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<ArrayList<Spot>> allSpots = new ArrayList<ArrayList<Spot>>();
     private ArrayList<String> spotIds = new ArrayList<>();
     private ArrayList<String> allSpotIds = new ArrayList<>();
+    private ArrayList<Place> recommendedPlaces = new ArrayList<Place>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +95,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         this.context = getApplicationContext();
         btnNext = findViewById(R.id.btnNext);
+
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
         Places.initialize(context, BuildConfig.MAPS_API_KEY);
@@ -166,6 +176,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addToTripPOIDialogFragment.show(fm, "dialog_fragment_add_to_trip_poi");
     }
 
+    private void getRecommendedPlaces() {
+        // TODO get list of recommended places based on user preferences and current city index
+    }
+
     // get list of cityIds stored in Parse and pan to the first city
     private void getTargetCities() {
         ParseQuery<Trip> query = ParseQuery.getQuery("Trip");
@@ -210,6 +224,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         spotsInCurrentCity.clear();
         placesInCurrentCity.clear();
         placesIdsCurrentCity.clear();
+        // TODO : recommendedPlaces.clear(), getRecommendedPlaces(), and notify adapter of change
     }
 
     private void updateTripWithAllPlaces() {

@@ -96,10 +96,10 @@
         android:id="@+id/tvPreferences"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvToDate"
+        android:layout_below="@+id/btnFromDate"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="67dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="5dp"
         android:text="Preferences:"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/cityBlue"
@@ -123,8 +123,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvCities"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="7dp"
+        android:layout_marginTop="67dp"
+        android:layout_marginEnd="233dp"
         android:text="Edit From Date"
         android:textSize="12sp" />
 
@@ -132,62 +132,12 @@
         android:id="@+id/btnToDate"
         android:layout_width="153dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnFromDate"
+        android:layout_below="@+id/tvCities"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="7dp"
+        android:layout_marginTop="67dp"
+        android:layout_marginEnd="43dp"
         android:text="Edit To Date"
         android:textSize="12sp" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvPreferences"
-        android:layout_marginTop="2dp"
-        android:orientation="vertical">
-
-        <CheckBox
-            android:id="@+id/cbAdult"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onCheckboxClicked"
-            android:text="Adult" />
-
-        <CheckBox
-            android:id="@+id/cbFamilyFriendly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onCheckboxClicked"
-            android:text="Family Friendly" />
-
-        <CheckBox
-            android:id="@+id/cbAttractions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onCheckboxClicked"
-            android:text="Tourist Attractions" />
-
-        <CheckBox
-            android:id="@+id/cbRestaurants"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onCheckboxClicked"
-            android:text="Restaurants" />
-
-        <CheckBox
-            android:id="@+id/cbShopping"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onCheckboxClicked"
-            android:text="Shopping" />
-
-        <CheckBox
-            android:id="@+id/cbHealth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onCheckboxClicked"
-            android:text="Health" />
-    </LinearLayout>
 
     <SeekBar
         android:id="@+id/seekBar"
@@ -206,6 +156,171 @@
         android:rotation="-90"
         android:rotationY="0"
         android:thumbTint="#F32140" />
+
+    <SeekBar
+        android:id="@+id/sbFood"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="false"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="126dp"
+        android:layout_marginEnd="174dp"
+        android:layout_marginBottom="53dp"
+        android:layout_toEndOf="@+id/textView12"
+        android:max="4"
+        android:progress="0"
+        android:progressTint="@color/cityBlue"
+        android:rotation="0"
+        android:rotationY="0"
+        android:thumbTint="#F32140" />
+
+    <SeekBar
+        android:id="@+id/sbAttractions"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="false"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="163dp"
+        android:layout_marginEnd="174dp"
+        android:layout_marginBottom="53dp"
+        android:layout_toEndOf="@+id/textView12"
+        android:max="4"
+        android:progress="0"
+        android:progressTint="@color/cityBlue"
+        android:rotation="0"
+        android:rotationY="0"
+        android:thumbTint="#F32140" />
+
+    <SeekBar
+        android:id="@+id/sbShopping"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="false"
+        android:layout_marginStart="46dp"
+        android:layout_marginTop="194dp"
+        android:layout_marginEnd="172dp"
+        android:layout_marginBottom="53dp"
+        android:layout_toEndOf="@+id/textView12"
+        android:max="4"
+        android:progress="0"
+        android:progressTint="@color/cityBlue"
+        android:rotation="0"
+        android:rotationY="0"
+        android:thumbTint="#F32140" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="152dp"
+        android:layout_marginBottom="90dp"
+        android:text="Tourist\nAttractions" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="195dp"
+        android:layout_marginBottom="90dp"
+        android:text="Shopping" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="126dp"
+        android:layout_marginBottom="90dp"
+        android:text="Food" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="83dp"
+        android:layout_marginBottom="90dp"
+        android:text="Family \nFriendly" />
+
+    <SeekBar
+        android:id="@+id/sbAdult"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="false"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="174dp"
+        android:layout_marginBottom="53dp"
+        android:layout_toEndOf="@+id/textView12"
+        android:max="4"
+        android:progress="0"
+        android:progressTint="@color/cityBlue"
+        android:rotation="0"
+        android:rotationY="0"
+        android:thumbTint="#F32140" />
+
+    <SeekBar
+        android:id="@+id/sbFamily"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="false"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="174dp"
+        android:layout_marginBottom="53dp"
+        android:layout_toEndOf="@+id/textView12"
+        android:max="4"
+        android:progress="0"
+        android:progressTint="@color/cityBlue"
+        android:rotation="0"
+        android:rotationY="0"
+        android:thumbTint="#F32140" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvPreferences"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="90dp"
+        android:text="Adult" />
 
     <ImageView
         android:id="@+id/imageView11"
@@ -237,9 +352,9 @@
         android:layout_below="@+id/tvPreferences"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="false"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="-1dp"
-        android:layout_marginEnd="87dp"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="85dp"
         android:src="@drawable/ic_dollar_sign" />
 
     <ImageView
@@ -332,10 +447,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="150dp"
-        android:layout_marginBottom="44dp"
+        android:layout_marginBottom="30dp"
         android:backgroundTint="@color/cityBlue"
         android:text="Create Trip"
         android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPreferences"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="false"
+        android:layout_centerVertical="false"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="371dp"
+        android:text="Preferred:     Least                      Most" />
 
 </RelativeLayout>

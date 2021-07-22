@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.PlaceParcelableObject;
 import com.codepath.cityslicker.R;
+import com.codepath.cityslicker.Utilities;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.api.ApiException;
@@ -46,6 +47,7 @@ public class AddToTripDialogFragment extends DialogFragment {
     private TextView tvAddress;
     private TextView tvPhoneNumber;
     private TextView tvOpeningHours;
+    private TextView tvPrice;
     private ImageView ivPhoto;
     private RatingBar ratingBar;
     private Button btnAddToTrip;
@@ -107,6 +109,7 @@ public class AddToTripDialogFragment extends DialogFragment {
         ratingBar = view.findViewById(R.id.ratingBar);
         btnAddToTrip = view.findViewById(R.id.btnAddToTrip);
         ibClose = view.findViewById(R.id.ibClose);
+        tvPrice = view.findViewById(R.id.tvPrice);
         ibClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,13 +139,22 @@ public class AddToTripDialogFragment extends DialogFragment {
             placeId = place.getId();
             placeName = place.getName();
             tvPlaceName.setText(place.getName());
+            if (place.getPriceLevel() != null) {
+                tvPrice.setText(Utilities.convertToDollars(place.getPriceLevel()));
+            } else {
+                tvPrice.setText("Unknown price level");
+            }
             fetchPhoto(place.getPhotoMetadatas());
             tvAddress.setText(place.getAddress());
             tvPhoneNumber.setText(place.getPhoneNumber());
             tvRating.setText("" + place.getRating());
             tvNumRatings.setText("(" + place.getUserRatingsTotal()+")");
-            ratingBar.setRating(place.getRating().floatValue());
-            tvWebsiteLink.setText(""+ place.getWebsiteUri());
+            if (place.getRating() != null) {
+                ratingBar.setRating(place.getRating().floatValue());
+            }
+            if (place.getWebsiteUri()!= null) {
+                tvWebsiteLink.setText(""+ place.getWebsiteUri());
+            }
             if (place.getOpeningHours() != null) {
                 tvOpeningHours.setText(
                         String.format("%s\n%s\n%s\n%s\n%s\n%s\n%s",

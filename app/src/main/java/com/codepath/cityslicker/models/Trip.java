@@ -20,9 +20,13 @@ public class Trip extends ParseObject {
     public static final String KEY_OWNER = "owner";
     public static final String KEY_START_DATE = "startDate";
     public static final String KEY_END_DATE = "endDate";
-    public static final String KEY_PREFERENCES = "preferences";
     public static final String KEY_BUDGET = "budget";
     public static final String KEY_REGIONS = "regions";
+    private static final String SHOPPING_PREFERENCE = "shoppingPref";
+    private static final String FOOD_PREFERENCE = "foodPref";
+    private static final String ADULT_PREFERENCE = "adultPref";
+    private static final String FAMILY_PREFERENCE = "familyPref";
+    private static final String ATTRACTIONS_PREFERENCE = "attractionsPref";
 
     public void setPlaces(JSONArray allPlaces) { put(KEY_PLACES, allPlaces); }
 
@@ -40,13 +44,21 @@ public class Trip extends ParseObject {
 
     public void setEndDate(Date date) {put(KEY_END_DATE, date);}
 
-    public void setPreferences(JSONArray preferences) {put(KEY_PREFERENCES, preferences);}
-
     public void setBudget(Integer budget) {put(KEY_BUDGET, budget);}
 
     public void setRegions(JSONArray cities) {put(KEY_REGIONS, cities);}
 
     public void setTripName(String name) {put(KEY_NAME, name);}
+
+    public void setShoppingPreference(Integer n) {put(SHOPPING_PREFERENCE, n);}
+
+    public void setAdultPreference(Integer n) {put(ADULT_PREFERENCE, n);}
+
+    public void setFamilyPreference(Integer n) {put(FAMILY_PREFERENCE, n);}
+
+    public void setFoodPreference(Integer n) {put(FOOD_PREFERENCE, n);}
+
+    public void setAttractionsPreference(Integer n) {put(ATTRACTIONS_PREFERENCE, n);}
 
     // Note: oneDimenLst has this format: ["[placeId1, placeId2, placeId3]", "[placeId1, placeId2]", "[placeId1, placeId2, placeId3]"]
     public static ArrayList<ArrayList<String>> parseForPlaces(ArrayList<String> oneDimenLst) {

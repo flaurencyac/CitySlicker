@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:animateLayoutChanges="true"
-tools:context=".ui.explore.ExploreFragment">
+tools:context=".activities.MapsActivity">
 
-    <fragment
-        android:id="@+id/autocomplete_fragment"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+        android:layout_height="wrap_content">
+        <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:layout_below="@+id/autocomplete_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="activities.MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:layout_below="@+id/autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="activities.MapsActivity"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-    <Button
-        android:id="@+id/btnNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="#EF4141"
-        android:text="Next"
-        android:textColor="#FFFFFF" />
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="620dp"
+            android:layout_marginEnd="11dp"
+            android:layout_marginBottom="53dp"
+            android:backgroundTint="#EF4141"
+            android:text="Next"
+            android:textColor="#FFFFFF" />
 
-</RelativeLayout>
+    </RelativeLayout>
+
+    <include layout="@layout/bottom_sheet_persistent" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
