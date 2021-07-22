@@ -59,7 +59,6 @@ public class EditTripFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvPlaces = view.findViewById(R.id.rvPlaces);
-
         LinearLayoutManager llm = new LinearLayoutManager(context);
         rvPlaces.setLayoutManager(llm);
         adapter = new PlaceAdapter(context, placesInCity, spots, tripId, trip);

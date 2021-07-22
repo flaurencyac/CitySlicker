@@ -227,11 +227,15 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
             trip.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
+                    if (e== null) {
+                        Log.i(TAG, "Success: removed spot from trip");
+                    } else {
+                        Log.e(TAG, "Error removing spot from trip", e);
+                    }
 
                 }
             });
             places.remove(getAdapterPosition());
-            notifyItemRemoved(getAdapterPosition());
             spots.get(getAdapterPosition()).deleteInBackground(e -> {
                 if (e == null) {
                     Log.i(TAG, "Deleted spot from Parse db");
@@ -240,6 +244,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                 }
             });
             spots.remove(getAdapterPosition());
+            PlaceAdapter.this.notifyItemRemoved(getAdapterPosition());
         }
 
         private void saveDateTime() {
@@ -256,6 +261,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                     public void done(ParseException e) {
                         if (e != null) {
                             Log.e(TAG, "Unable to save spot time", e);
+                            sortSpotsAndPlaces();
+                            PlaceAdapter.this.notifyDataSetChanged();
                         } else {
                             Log.i(TAG, "Saved spot time!");
                         }

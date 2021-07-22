@@ -53,8 +53,9 @@ public class Trip extends ParseObject {
         ArrayList<ArrayList<String>> placeIds = new ArrayList<ArrayList<String>>();
         for(int i =0; i< oneDimenLst.size(); i++) {
             String placesInCity = oneDimenLst.get(i).substring(1, oneDimenLst.get(i).length()-1);
-            ArrayList<String> placesInCityList = (ArrayList<String>) Arrays.asList(placesInCity.replaceAll(" ", "").split(","));
-            placeIds.add(placesInCityList);
+            ArrayList<String> temp = new ArrayList<String>();
+            temp.addAll(Arrays.asList(placesInCity.replaceAll(" ", "").split(",")));
+            placeIds.add(temp);
         }
         return placeIds;
     }

@@ -31,6 +31,8 @@ import com.codepath.cityslicker.ui.explore.ExploreFragment;
 import com.codepath.cityslicker.ui.profile.ProfileFragment;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.textfield.TextInputLayout;
+import com.parse.Parse;
+import com.parse.ParseQuery;
 
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
@@ -86,12 +88,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(context, "Selected "+cityNames.get(position), Toast.LENGTH_SHORT).show();
-                switch(position) {
-                    case 0:
-                        selectFragment(position);
-                    default:
-                        selectFragment(position);
-                }
+                selectFragment(position);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

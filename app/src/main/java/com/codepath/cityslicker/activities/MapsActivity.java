@@ -218,6 +218,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         allSpots.add(spotsInCurrentCity);
         allSpotIds.add(spotIds.toString());
         ParseQuery<Trip> query  = ParseQuery.getQuery("Trip");
+        query.include(Trip.KEY_PLACES);
         query.getInBackground(tripId, (object, e) -> {
             object.setPlaces(new JSONArray(allSpotIds));
             object.saveInBackground(new SaveCallback() {
@@ -227,7 +228,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Intent intent = new Intent(context, DetailsActivity.class);
                     intent.putExtra("tripId", tripId);
                     TripParcelableObject parcel = new TripParcelableObject();
-                    parcel.setTrip(trip);
+                    parcel.setTrip(object);
                     parcel.setSpotsInParcel(allSpots);
                     parcel.setPlacesInParcel(allPlaces);
                     intent.putExtra("tripObj", Parcels.wrap(parcel));
