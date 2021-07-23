@@ -60,7 +60,7 @@ dependencies {
     // Google Play dependencies
     implementation "com.google.android.gms:play-services-maps:$googlePlayVersion"
     implementation "com.google.android.gms:play-services-location:$googlePlayVersion"
-    // Google Places dependencies
+    // Google Places SDK dependencies
     implementation "com.google.android.libraries.places:places:2.2.0"
     // for Toolbar
     implementation 'androidx.appcompat:appcompat:1.0.0'
@@ -73,4 +73,7 @@ dependencies {
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
     // for expanding bottom sheet
     implementation 'com.google.android.material:material:1.5.0-alpha01'
+    // for Google Web services Places API
+    implementation 'com.google.api-client:google-api-client:1.23.0'
+
 }

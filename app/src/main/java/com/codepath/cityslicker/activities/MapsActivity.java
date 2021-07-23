@@ -1,6 +1,7 @@
 package com.codepath.cityslicker.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -20,10 +21,15 @@ import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.TripParcelableObject;
 import com.codepath.cityslicker.adapters.RecommendedAdapter;
 import com.codepath.cityslicker.fragments.AddToTripDialogFragment;
+import com.codepath.cityslicker.models.RecommendedPlace;
 import com.codepath.cityslicker.models.Spot;
 import com.codepath.cityslicker.models.Trip;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,21 +47,36 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AddToTripDialogFragment.AddToTripPOIDialogFragmentListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AddToTripDialogFragment.AddToTripPOIDialogFragmentListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
     private static final String TAG = "MapsActivity";
+    private static final String TYPE_FOOD = "restaurant";
+    private static final String KEYWORD_FAMILY = "kids";
+    private static final String TYPE_FAMILY = "tourist_attractions";
+    private static final String TYPE_ADULT = "night_club";
+    private static final String TYPE_ATTRACTIONS = "tourist_attraction";
+    private static final String TYPE_SHOPPING = "shopping_mall";
+    private static final Integer PROXIMITY_RADIUS = 1500;
 
     private static final float BOUNDARY_ZOOM = 11f;
     private static final float CENTER_ZOOM = 15f;
@@ -66,11 +87,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Context context;
     private GoogleMap googleMap;
     private PlacesClient placesClient;
+    private GoogleApiClient googleApiClient;
     private SupportMapFragment supportMapFragment;
     private RecyclerView rvRecommended;
     private RecommendedAdapter adapter;
     private AutocompleteSupportFragment autocompleteSupportFragment;
 
+    private Integer adultPref;
+    private Integer familyPref;
+    private Integer foodPref;
+    private Integer attractionsPref;
+    private Integer shoppingPref;
+    private Integer budget;
     private Trip trip;
     private String tripId;
     private static LatLngBounds latLngBoundary;
@@ -87,7 +115,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<ArrayList<Spot>> allSpots = new ArrayList<ArrayList<Spot>>();
     private ArrayList<String> spotIds = new ArrayList<>();
     private ArrayList<String> allSpotIds = new ArrayList<>();
-    private ArrayList<Place> recommendedPlaces = new ArrayList<Place>();
+    private ArrayList<RecommendedPlace> allRecommendedPlaces = new ArrayList<RecommendedPlace>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +123,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         this.context = getApplicationContext();
         btnNext = findViewById(R.id.btnNext);
+        rvRecommended = findViewById(R.id.rvRecommended);
 
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
@@ -132,6 +161,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
+
+        LinearLayoutManager llm = new LinearLayoutManager(context);
+        rvRecommended.setLayoutManager(llm);
+        buildGoogleApiClient();
     }
 
     @Override
@@ -139,6 +172,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tripId = getIntent().getStringExtra("tripId");
         TripParcelableObject parcel = Parcels.unwrap(getIntent().getParcelableExtra("tripObj"));
         trip = parcel.getTrip();
+        budget = trip.getBudget();
+        adultPref = trip.getAdultPreference();
+        attractionsPref = trip.getAttractionsPreference();
+        familyPref = trip.getFamilyPreference();
+        foodPref = trip.getFoodPreference();
+        shoppingPref = trip.getShoppingPreference();
         getTargetCities();
         googleMap = gMap;
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.style_json));
@@ -148,6 +187,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 showPOIDetailsFragment(pointOfInterest);
             }
         });
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        googleApiClient.connect();
     }
 
     private void setLatLngBoundary(LatLng latLng) {
@@ -162,7 +210,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.addMarker(options);
     }
 
-
     public void showPOIDetailsFragment(PointOfInterest poi) {
         Toast.makeText(this, "Clicked: " + poi.name + "Place ID:" + poi.placeId + "Latitude:" + poi.latLng.latitude + " Longitude:" + poi.latLng.longitude, Toast.LENGTH_SHORT).show();
         FragmentManager fm = getSupportFragmentManager();
@@ -176,8 +223,79 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addToTripPOIDialogFragment.show(fm, "dialog_fragment_add_to_trip_poi");
     }
 
-    private void getRecommendedPlaces() {
-        // TODO get list of recommended places based on user preferences and current city index
+
+    private void getRecommendedPlaces(){
+        if (adultPref != 0) {
+            allRecommendedPlaces.addAll(getTypeOfRecommendedPlaces(TYPE_ADULT, adultPref));
+        }
+        if (attractionsPref != 0) {
+            allRecommendedPlaces.addAll(getTypeOfRecommendedPlaces(TYPE_ATTRACTIONS, attractionsPref));
+        }
+        if (familyPref != 0) {
+            allRecommendedPlaces.addAll(getTypeOfRecommendedPlaces(TYPE_FAMILY, familyPref));
+        }
+        if (foodPref != 0) {
+            allRecommendedPlaces.addAll(getTypeOfRecommendedPlaces(TYPE_FOOD, foodPref));
+        }
+        if (shoppingPref != 0) {
+            allRecommendedPlaces.addAll(getTypeOfRecommendedPlaces(TYPE_SHOPPING, shoppingPref));
+        }
+        if (shoppingPref == 0 && adultPref == 0 && attractionsPref == 0 && foodPref == 0 && shoppingPref == 0) {
+            allRecommendedPlaces.addAll(getTypeOfRecommendedPlaces(TYPE_ATTRACTIONS, attractionsPref));
+        }
+    }
+
+    private ArrayList<RecommendedPlace> getTypeOfRecommendedPlaces(@Nullable String type, @NonNull Integer prefWeight) {
+        ArrayList<RecommendedPlace> recommendedPlaces = null;
+        HttpURLConnection connection = null;
+        StringBuilder jsonResults = new StringBuilder();
+        try {
+            StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+            googlePlaceUrl.append("location="+cityList.get(currentCityIndex).getLatLng().latitude+","+cityList.get(currentCityIndex).getLatLng().longitude);
+            googlePlaceUrl.append("&radius="+PROXIMITY_RADIUS);
+            googlePlaceUrl.append("&rankby=prominence");
+            googlePlaceUrl.append("&maxprice="+budget);
+            if (type == null) {
+                googlePlaceUrl.append("&type="+TYPE_ATTRACTIONS);
+            } else if(type.equals(TYPE_FAMILY)) {
+                googlePlaceUrl.append("&type="+type);
+                googlePlaceUrl.append("&keyword="+KEYWORD_FAMILY);
+            }
+            else {
+                googlePlaceUrl.append("&type="+type);
+            }
+            googlePlaceUrl.append("&sensor=true");
+            googlePlaceUrl.append("&key="+BuildConfig.MAPS_API_KEY);
+            URL url = new URL(googlePlaceUrl.toString());
+            connection = (HttpURLConnection) url.openConnection();
+            InputStreamReader in = new InputStreamReader(connection.getInputStream());
+            int read;
+            char[] buffer = new char[1050];
+            while((read=in.read(buffer))!=-1) {
+                jsonResults.append(buffer, 0, read);
+            }
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "Error processing Places API URL", e);
+        } catch (IOException e) {
+            Log.e(TAG, "Error connecting to Places API", e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        try {
+            JSONObject jsonObject = new JSONObject((jsonResults.toString()));
+            JSONArray resultsJsonArray = jsonObject.getJSONArray("results");
+            recommendedPlaces = new ArrayList<RecommendedPlace>();
+            for (int i = 0; i < resultsJsonArray.length(); i++) {
+                RecommendedPlace recommendedPlace = new RecommendedPlace(resultsJsonArray.getJSONObject(i));
+                recommendedPlace.setWeight(prefWeight);
+                recommendedPlaces.add(recommendedPlace);
+            }
+        } catch (JSONException e){
+            Log.e(TAG, "Error processing JSON results", e);
+        }
+        return recommendedPlaces;
     }
 
     // get list of cityIds stored in Parse and pan to the first city
@@ -206,6 +324,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (currentCityIndex == cityIdList.size()-1) {
                 btnNext.setText("Done!");
             }
+            new Thread(new Runnable() {
+                public void run() {
+                    getRecommendedPlaces();
+                    //allRecommendedPlaces = RecommendedPlace.sortRecommendedPlaces(allRecommendedPlaces);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter = new RecommendedAdapter(context, allRecommendedPlaces);
+                            rvRecommended.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }).start();
         });
     }
 
@@ -224,7 +356,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         spotsInCurrentCity.clear();
         placesInCurrentCity.clear();
         placesIdsCurrentCity.clear();
-        // TODO : recommendedPlaces.clear(), getRecommendedPlaces(), and notify adapter of change
+        allRecommendedPlaces.clear();
+        getRecommendedPlaces();
+        // TODO : sortRecommendedPlaces
+        adapter.notifyDataSetChanged();
     }
 
     private void updateTripWithAllPlaces() {
@@ -282,4 +417,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             spotsInCurrentCity.add(spot);
         }
     }
+
+    @Override
+    public void onConnected(@Nullable @org.jetbrains.annotations.Nullable Bundle bundle) { Log.i(TAG, "API Client connected!"); }
+
+    @Override
+    public void onConnectionSuspended(int i) { Log.i(TAG, "API Client connection suspended!"); }
+
+    @Override
+    public void onConnectionFailed(@NonNull @NotNull ConnectionResult connectionResult) { Log.e(TAG, "API Client connection failed!"); }
+
+    @Override
+    public void onLocationChanged(Location location) { Log.i(TAG, "API Client location changed to: "+location.toString()); }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) { Log.i(TAG, "API Client pointer capture changed to: "+hasCapture); }
+
 }

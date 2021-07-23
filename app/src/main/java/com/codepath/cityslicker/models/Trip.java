@@ -42,6 +42,18 @@ public class Trip extends ParseObject {
 
     public Date getEndDate() {return getDate(KEY_END_DATE);}
 
+    public Integer getBudget() {return getInt(KEY_BUDGET);}
+
+    public Integer getAdultPreference() {return getInt(ADULT_PREFERENCE);}
+
+    public Integer getAttractionsPreference() {return getInt(ATTRACTIONS_PREFERENCE);}
+
+    public Integer getFamilyPreference() {return getInt(FAMILY_PREFERENCE);}
+
+    public Integer getFoodPreference() {return getInt(FOOD_PREFERENCE);}
+
+    public Integer getShoppingPreference() {return getInt(SHOPPING_PREFERENCE);}
+
     public void setEndDate(Date date) {put(KEY_END_DATE, date);}
 
     public void setBudget(Integer budget) {put(KEY_BUDGET, budget);}

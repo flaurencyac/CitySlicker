@@ -15,19 +15,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.Utilities;
+import com.codepath.cityslicker.models.RecommendedPlace;
 import com.google.android.libraries.places.api.model.Place;
 
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.ViewHolder>{
+    private static final String TAG = "RecommendedAdapter";
 
     private Context context;
-    private ArrayList<Place> recommendedPlaces = new ArrayList<Place>();
+    private ArrayList<RecommendedPlace> recommendedPlaces = new ArrayList<RecommendedPlace>();
 
-    public RecommendedAdapter(Context context, ArrayList<Place> recommendedPlaces) {
+    public RecommendedAdapter(Context context, ArrayList<RecommendedPlace> recommendedPlaces) {
         this.context = context;
         this.recommendedPlaces = recommendedPlaces;
     }
@@ -42,7 +45,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull RecommendedAdapter.ViewHolder holder, int position) {
-        Place place = recommendedPlaces.get(position);
+        RecommendedPlace place = recommendedPlaces.get(position);
         holder.bind(place);
     }
 
@@ -77,42 +80,21 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
             tvOpeningHours = itemView.findViewById(R.id.tvOpeningHours);
             ivPhoto = itemView.findViewById(R.id.ivPhoto);
             btnAddToTrip = itemView.findViewById(R.id.btnAddToTrip);
-            tvPrice = itemView.findViewById(R.id.tvPrice);
         }
 
-        public void bind(Place place) {
+        public void bind(RecommendedPlace place) {
             tvPlaceName.setText(place.getName());
-            tvAddress.setText(place.getAddress());
-            tvPhoneNumber.setText(place.getPhoneNumber());
+            tvAddress.setText(place.getVicinity());
             tvNumRatings.setText("(" + place.getUserRatingsTotal()+")");
             tvRating.setText("" + place.getRating());
-            if (place.getPriceLevel() != null) {
-                tvPrice.setText(Utilities.convertToDollars(place.getPriceLevel()));
-            } else {
-                tvPrice.setText("Unknown price level");
-            }
             if (place.getRating() != null) {
                 ratingBar.setRating(place.getRating().floatValue());
             }
-            if (place.getWebsiteUri()!= null) {
-                tvWebsiteLink.setText(""+ place.getWebsiteUri());
-            }
-            if (place.getOpeningHours() != null) {
-                tvOpeningHours.setText(
-                        String.format("%s\n%s\n%s\n%s\n%s\n%s\n%s",
-                                place.getOpeningHours().getWeekdayText().get(0),
-                                place.getOpeningHours().getWeekdayText().get(1),
-                                place.getOpeningHours().getWeekdayText().get(2),
-                                place.getOpeningHours().getWeekdayText().get(3),
-                                place.getOpeningHours().getWeekdayText().get(4),
-                                place.getOpeningHours().getWeekdayText().get(5),
-                                place.getOpeningHours().getWeekdayText().get(6)));
-            }
-            // TODO get photo of place
+            tvOpeningHours.setText("Open now: "+place.getOpen());
             btnAddToTrip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO : if clicked communicate to maps activity that this should be
+                    // TODO : if clicked communicate to maps activity that this should be added to the list of places for the current city
                 }
             });
         }

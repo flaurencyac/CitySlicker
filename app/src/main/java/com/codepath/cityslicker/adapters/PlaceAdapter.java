@@ -67,6 +67,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
     String tripId;
     Trip trip;
 
+
     public PlaceAdapter(Context context, ArrayList<Place> places, ArrayList<Spot> spots, String tripId, Trip trip) {
         this.context = context;
         this.spots = spots;

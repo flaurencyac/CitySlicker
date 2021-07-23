@@ -39,6 +39,8 @@ import java.util.List;
 public class AddToTripDialogFragment extends DialogFragment {
     private static final String TAG = "POIDialogFragment";
     private static final String PARCEL_NAME = "place";
+    private final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
+            Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
 
     private TextView tvPlaceName;
     private TextView tvRating;
@@ -52,8 +54,8 @@ public class AddToTripDialogFragment extends DialogFragment {
     private RatingBar ratingBar;
     private Button btnAddToTrip;
     private ImageButton ibClose;
-    protected Bitmap bitmap;
     private AddToTripPOIDialogFragmentListener listener;
+    private PlacesClient placesClient;
 
     private Boolean addToTrip;
     private String placeId;
@@ -129,9 +131,7 @@ public class AddToTripDialogFragment extends DialogFragment {
 
         PlaceParcelableObject placeParcelableObject = (PlaceParcelableObject) getArguments().getParcelable("place");
         Places.initialize(getContext(), BuildConfig.MAPS_API_KEY);
-        PlacesClient placesClient = Places.createClient(getContext());
-        final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
-                Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
+        placesClient = Places.createClient(getContext());
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeParcelableObject.getId(), placeFields);
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
@@ -144,7 +144,7 @@ public class AddToTripDialogFragment extends DialogFragment {
             } else {
                 tvPrice.setText("Unknown price level");
             }
-            fetchPhoto(place.getPhotoMetadatas());
+            Utilities.fetchPhoto(getContext(), place.getPhotoMetadatas(), ivPhoto, TAG);
             tvAddress.setText(place.getAddress());
             tvPhoneNumber.setText(place.getPhoneNumber());
             tvRating.setText("" + place.getRating());
@@ -156,41 +156,9 @@ public class AddToTripDialogFragment extends DialogFragment {
                 tvWebsiteLink.setText(""+ place.getWebsiteUri());
             }
             if (place.getOpeningHours() != null) {
-                tvOpeningHours.setText(
-                        String.format("%s\n%s\n%s\n%s\n%s\n%s\n%s",
-                                place.getOpeningHours().getWeekdayText().get(0),
-                                place.getOpeningHours().getWeekdayText().get(1),
-                                place.getOpeningHours().getWeekdayText().get(2),
-                                place.getOpeningHours().getWeekdayText().get(3),
-                                place.getOpeningHours().getWeekdayText().get(4),
-                                place.getOpeningHours().getWeekdayText().get(5),
-                                place.getOpeningHours().getWeekdayText().get(6)));
+                tvOpeningHours.setText(Utilities.getOpeningHours(place));
             }
         });
-    }
-
-    private void fetchPhoto(List<PhotoMetadata> photoMetadataList) {
-        Places.initialize(getContext(), BuildConfig.MAPS_API_KEY);
-        PlacesClient placesClient = Places.createClient(getContext());
-        if (photoMetadataList == null || photoMetadataList.isEmpty()) {
-            Log.i(TAG, "No photo metadata.");
-            bitmap = null;
-        } else {
-            final PhotoMetadata photoMetadata = photoMetadataList.get(0);
-            final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata).build();
-            placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-                bitmap = fetchPhotoResponse.getBitmap();
-                ivPhoto.setImageBitmap(bitmap);
-                Log.i(TAG, "photo fetched");
-            }).addOnFailureListener((exception) -> {
-                if (exception instanceof ApiException) {
-                    final ApiException apiException = (ApiException) exception;
-                    Log.e(TAG, "Place not found: " + exception.getMessage());
-                    final int statusCode = apiException.getStatusCode();
-                    Log.e(TAG, "Place not found: " + statusCode);
-                }
-            });
-        }
     }
 
 }
