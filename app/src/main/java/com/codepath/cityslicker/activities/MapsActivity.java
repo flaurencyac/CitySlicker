@@ -72,7 +72,7 @@ import java.util.List;
 import nl.dionsegijn.konfetti.KonfettiView;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AddToTripDialogFragment.AddToTripPOIDialogFragmentListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, RecommendedAdapter.RecommendedSpotListener {
 
     private static final String TAG = "MapsActivity";
     private static final String TYPE_FOOD = "restaurant";
@@ -125,8 +125,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> allSpotIds = new ArrayList<>();
     private ArrayList<RecommendedPlace> allRecommendedPlaces = new ArrayList<RecommendedPlace>();
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull @NotNull Place selectedPlace) {
-                 final FetchPlaceRequest request = FetchPlaceRequest.newInstance(selectedPlace.getId(), placeFields);
+                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(selectedPlace.getId(), placeFields);
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                     Place place = response.getPlace();
                     moveCamera(place.getLatLng(),CENTER_ZOOM, place.getName());
@@ -348,7 +346,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         @Override
                         public void run() {
                             allRecommendedPlaces = RecommendedPlace.sortRecommendedPlaces(allRecommendedPlaces);
-                            adapter = new RecommendedAdapter(context, allRecommendedPlaces);
+                            adapter = new RecommendedAdapter(context, allRecommendedPlaces, MapsActivity.this);
                             rvRecommended.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         }
@@ -447,4 +445,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) { Log.i(TAG, "API Client pointer capture changed to: "+hasCapture); }
 
+    @Override
+    public void addRecommendedSpot(RecommendedPlace recommendedPlace) {
+        // TODO add the recommended place to list of current city places
+        Spot spot = new Spot();
+        spot.setName(recommendedPlace.getName());
+        spot.setPlaceID(recommendedPlace.getPlaceId());
+        spot.setCityId(cityIdList.get(currentCityIndex));
+        spot.setTrip(trip);
+        spot.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e!= null) {
+                    Log.e(TAG, "Error creating spot in Parse", e);
+                } else {
+                    spotIds.add(spot.getObjectId());
+                    Log.i(TAG, "Saved spot to parse!");
+                }
+            }
+        });
+        final FetchPlaceRequest request = FetchPlaceRequest.newInstance(recommendedPlace.getPlaceId(), placeFields);
+        placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+            Place place = response.getPlace();
+            placesInCurrentCity.add(place);
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                final ApiException apiException = (ApiException) exception;
+                Log.e(TAG, "Place not found: "+exception.getMessage());
+            }});
+        placesIdsCurrentCity.add(recommendedPlace.getPlaceId());
+        spotsInCurrentCity.add(spot);
+    }
 }

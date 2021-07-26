@@ -65,10 +65,4 @@ public class EditTripFragment extends Fragment {
         rvPlaces.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
-
-
-
-
-
-
 }

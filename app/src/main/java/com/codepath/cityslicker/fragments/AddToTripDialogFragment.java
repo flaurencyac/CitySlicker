@@ -141,8 +141,6 @@ public class AddToTripDialogFragment extends DialogFragment {
             tvPlaceName.setText(place.getName());
             if (place.getPriceLevel() != null) {
                 tvPrice.setText(Utilities.convertToDollars(place.getPriceLevel()));
-            } else {
-                tvPrice.setText("Unknown price level");
             }
             Utilities.fetchPhoto(getContext(), place.getPhotoMetadatas(), ivPhoto, TAG);
             tvAddress.setText(place.getAddress());

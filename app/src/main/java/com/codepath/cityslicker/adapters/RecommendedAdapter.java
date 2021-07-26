@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.Utilities;
 import com.codepath.cityslicker.models.RecommendedPlace;
+import com.codepath.cityslicker.models.Spot;
 import com.google.android.libraries.places.api.model.Place;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,12 +28,14 @@ import java.util.List;
 public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.ViewHolder>{
     private static final String TAG = "RecommendedAdapter";
 
+    RecommendedSpotListener recommendedSpotListener;
     private Context context;
     private ArrayList<RecommendedPlace> recommendedPlaces = new ArrayList<RecommendedPlace>();
 
-    public RecommendedAdapter(Context context, ArrayList<RecommendedPlace> recommendedPlaces) {
+    public RecommendedAdapter(Context context, ArrayList<RecommendedPlace> recommendedPlaces, RecommendedSpotListener listener ) {
         this.context = context;
         this.recommendedPlaces = recommendedPlaces;
+        this.recommendedSpotListener = listener;
     }
 
     @NonNull
@@ -40,7 +43,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
     @Override
     public RecommendedAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View placeView = LayoutInflater.from(context).inflate(R.layout.item_recommended, parent, false);
-        return new RecommendedAdapter.ViewHolder(placeView);
+        return new RecommendedAdapter.ViewHolder(placeView, recommendedSpotListener);
     }
 
     @Override
@@ -67,8 +70,9 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         private TextView tvOpeningHours;
         private ImageView ivPhoto;
         private Button btnAddToTrip;
+        private RecommendedSpotListener recommendedSpotListener;
 
-        public ViewHolder(@NonNull @NotNull View itemView) {
+        public ViewHolder(@NonNull @NotNull View itemView, RecommendedSpotListener listener) {
             super(itemView);
             tvPlaceName=itemView.findViewById(R.id.tvPlaceName);
             tvRating = itemView.findViewById(R.id.tvRating);
@@ -80,6 +84,8 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
             tvOpeningHours = itemView.findViewById(R.id.tvOpeningHours);
             ivPhoto = itemView.findViewById(R.id.ivPhoto);
             btnAddToTrip = itemView.findViewById(R.id.btnAddToTrip);
+
+            this.recommendedSpotListener = listener;
         }
 
         public void bind(RecommendedPlace place) {
@@ -94,10 +100,14 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
             btnAddToTrip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO : if clicked communicate to maps activity that this should be added to the list of places for the current city
+                    recommendedSpotListener.addRecommendedSpot(recommendedPlaces.get(getAdapterPosition()));
                 }
             });
         }
-
     }
+
+    public interface RecommendedSpotListener {
+        void addRecommendedSpot(RecommendedPlace recommendedPlace);
+    }
+
 }
