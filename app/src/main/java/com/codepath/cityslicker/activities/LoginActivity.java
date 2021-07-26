@@ -1,6 +1,9 @@
 package com.codepath.cityslicker.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.codepath.cityslicker.MainActivity;
 import com.codepath.cityslicker.R;
@@ -22,20 +26,28 @@ import com.parse.SignUpCallback;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
+
 
 public class LoginActivity extends AppCompatActivity {
     public static final String TAG = "LoginActivity";
+    private Context context;
     private EditText etUsername;
     private EditText etPassword;
     private Button btnLogin;
     private Switch switchPasswordVisibility;
     private Boolean showPassword;
     private Button btnSignup;
+    private KonfettiView konfettiView;
+    private Drawable plane;
+    private Shape.DrawableShape planeShape;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        context = LoginActivity.this;
         if (ParseUser.getCurrentUser() != null) {
             goMainActivity();
         }
@@ -46,6 +58,19 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         switchPasswordVisibility = findViewById(R.id.switchPasswordVisibility);
         btnLogin = findViewById(R.id.btnLogin);
+        konfettiView = findViewById(R.id.viewKonfetti);
+        plane = ContextCompat.getDrawable(context, R.drawable.ic_baseline_flight_24);
+        planeShape  = new Shape.DrawableShape(plane, true);
+        konfettiView.build()
+                .addColors(Color.TRANSPARENT, Color.WHITE, Color.argb( 100, 0,191,255))
+                .setDirection(0.0, 359.0)
+                .setSpeed(1f, 5f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(2000L)
+                .addShapes(Shape.Square.INSTANCE, planeShape)
+                .addSizes(new Size(12, 5f))
+                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                .streamFor(300, 3000L);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,8 +126,9 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e(TAG, "Issue with login"+e, e);
                     Toast.makeText(LoginActivity.this, "Unable to log in", Toast.LENGTH_SHORT).show();
                 } else {
+
+
                     goMainActivity();
-                    Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -3,11 +3,14 @@ package com.codepath.cityslicker.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
@@ -39,12 +42,19 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
+
 public class DetailsActivity extends AppCompatActivity {
     private static final String TAG = "DetailsActivity";
 
     private Spinner citiesSpinner;
     private Button btnDone;
     private Context context;
+    private KonfettiView konfettiView;
+    private Drawable plane;
+    private Shape.DrawableShape planeShape;
 
     private ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
     private ArrayList<ArrayList<String>> allPlaceIds = new ArrayList<ArrayList<String>>();
@@ -74,6 +84,7 @@ public class DetailsActivity extends AppCompatActivity {
         allPlaceIds = (ArrayList<ArrayList<String>>) getIntent().getExtras().getSerializable("allPlaceIds");
 
         frameLayout = findViewById(R.id.FrameLayout);
+        konfettiView = findViewById(R.id.viewKonfetti);
         citiesSpinner = findViewById(R.id.citiesSpinner);
         btnDone = findViewById(R.id.btnDone);
 
@@ -103,6 +114,19 @@ public class DetailsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        plane = ContextCompat.getDrawable(context, R.drawable.ic_baseline_flight_24);
+        planeShape  = new Shape.DrawableShape(plane, true);
+        konfettiView.build()
+                .addColors(Color.TRANSPARENT, Color.RED, Color.BLUE, Color.WHITE, Color.argb( 100, 0,191,255))
+                .setDirection(0.0, 359.0)
+                .setSpeed(1f, 5f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(2000L)
+                .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, planeShape)
+                .addSizes(new Size(12, 5f))
+                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                .streamFor(300, 3000L);
 
     }
 

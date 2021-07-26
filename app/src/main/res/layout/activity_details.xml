@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".activities.DetailsActivity">
 
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/viewKonfetti"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <Spinner
         android:id="@+id/citiesSpinner"
         android:layout_width="match_parent"
