@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.codepath.cityslicker.BuildConfig;
@@ -47,6 +48,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
@@ -66,6 +68,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import nl.dionsegijn.konfetti.KonfettiView;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AddToTripDialogFragment.AddToTripPOIDialogFragmentListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -93,6 +97,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private RecyclerView rvRecommended;
     private RecommendedAdapter adapter;
     private AutocompleteSupportFragment autocompleteSupportFragment;
+    private ImageButton ibLowerBottomSheet;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private KonfettiView konfettiView;
 
     private Integer adultPref;
     private Integer familyPref;
@@ -127,6 +134,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.context = getApplicationContext();
         btnNext = findViewById(R.id.btnNext);
         rvRecommended = findViewById(R.id.rvRecommended);
+        ibLowerBottomSheet = findViewById(R.id.ibLowerBottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheet));
 
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
@@ -164,9 +173,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-
+        ibLowerBottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
         LinearLayoutManager llm = new LinearLayoutManager(context);
         rvRecommended.setLayoutManager(llm);
+
         buildGoogleApiClient();
     }
 
