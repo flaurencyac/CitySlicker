@@ -64,6 +64,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AddToTripDialogFragment.AddToTripPOIDialogFragmentListener,
@@ -116,6 +117,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> spotIds = new ArrayList<>();
     private ArrayList<String> allSpotIds = new ArrayList<>();
     private ArrayList<RecommendedPlace> allRecommendedPlaces = new ArrayList<RecommendedPlace>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,7 +214,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void showPOIDetailsFragment(PointOfInterest poi) {
-        Toast.makeText(this, "Clicked: " + poi.name + "Place ID:" + poi.placeId + "Latitude:" + poi.latLng.latitude + " Longitude:" + poi.latLng.longitude, Toast.LENGTH_SHORT).show();
         FragmentManager fm = getSupportFragmentManager();
         AddToTripDialogFragment addToTripPOIDialogFragment = AddToTripDialogFragment.newInstance(poi);
         addToTripPOIDialogFragment.show(fm, "dialog_fragment_add_to_trip_poi");
@@ -327,10 +329,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             new Thread(new Runnable() {
                 public void run() {
                     getRecommendedPlaces();
-                    //allRecommendedPlaces = RecommendedPlace.sortRecommendedPlaces(allRecommendedPlaces);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            allRecommendedPlaces = RecommendedPlace.sortRecommendedPlaces(allRecommendedPlaces);
                             adapter = new RecommendedAdapter(context, allRecommendedPlaces);
                             rvRecommended.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
@@ -357,9 +359,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         placesInCurrentCity.clear();
         placesIdsCurrentCity.clear();
         allRecommendedPlaces.clear();
-        getRecommendedPlaces();
-        // TODO : sortRecommendedPlaces
-        adapter.notifyDataSetChanged();
     }
 
     private void updateTripWithAllPlaces() {

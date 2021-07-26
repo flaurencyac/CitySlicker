@@ -43,6 +43,7 @@ import java.util.List;
 
 public class POIDialogFragment extends DialogFragment {
     private static final String TAG = "POIDialogFragment";
+    private static final String PLACE = "place";
     private final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.RATING,
             Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
 
@@ -65,7 +66,7 @@ public class POIDialogFragment extends DialogFragment {
     public static POIDialogFragment newInstance(PointOfInterest poi) {
         POIDialogFragment frag = new POIDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable("place", (Parcelable) new PlaceParcelableObject(poi));
+        args.putParcelable(PLACE, (Parcelable) new PlaceParcelableObject(poi));
         frag.setArguments(args);
         return frag;
     }
@@ -73,7 +74,7 @@ public class POIDialogFragment extends DialogFragment {
     public static POIDialogFragment newInstance(Place place) {
         POIDialogFragment frag = new POIDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable("place", (Parcelable) new PlaceParcelableObject(place));
+        args.putParcelable(PLACE, (Parcelable) new PlaceParcelableObject(place));
         frag.setArguments(args);
         return frag;
     }

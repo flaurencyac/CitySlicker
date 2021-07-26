@@ -98,5 +98,6 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
                 }
             });
         }
+
     }
 }

@@ -5,7 +5,8 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 
 @Parcel
 public class RecommendedPlace {
@@ -36,17 +37,48 @@ public class RecommendedPlace {
         }
     }
 
-    public void setWeight(Integer weight) {
-        this.weight = (weight * 10) + rating;
+    private static ArrayList<RecommendedPlace> reverseList(ArrayList<RecommendedPlace> placesList) {
+        ArrayList<RecommendedPlace> reversedList = new ArrayList<RecommendedPlace>();
+        for (int i = 0; i<placesList.size();i++) {
+            reversedList.add(placesList.get(placesList.size()-1-i));
+        }
+        return reversedList;
+    }
+
+    public static ArrayList<RecommendedPlace> quicksort(ArrayList<RecommendedPlace> lst, int start, int end) {
+        if (start < end) {
+            int pivot = start;
+            int left = start +1;
+            int right = end;
+            double pivotValue = lst.get(pivot).getWeight();
+            while (left <= right) {
+                while (left <= end && pivotValue >= lst.get(left).getWeight()) {
+                    left += 1;
+                }
+                while (right > start && pivotValue < lst.get(right).getWeight()) {
+                    right -= 1;
+                }
+                if (left < right) {
+                    Collections.swap(lst, left, right);
+                }
+            }
+            Collections.swap(lst, pivot, left-1);
+            quicksort(lst, start, right-1);
+            quicksort(lst, right+1, end);
+        }
+        return lst;
     }
 
     public static ArrayList<RecommendedPlace> sortRecommendedPlaces(ArrayList<RecommendedPlace> unsortedList) {
-
-        return null;
+        return reverseList(quicksort(unsortedList, 0, unsortedList.size()-1));
     }
 
     public void getPhoto() {
         // TODO make place photo request
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = (weight * 10) + rating;
     }
 
     public String getName() {
