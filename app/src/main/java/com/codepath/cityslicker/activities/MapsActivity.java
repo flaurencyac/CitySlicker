@@ -129,7 +129,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        this.context = getApplicationContext();
+        //this.context = getApplicationContext();
+        this.context = MapsActivity.this;
         btnNext = findViewById(R.id.btnNext);
         rvRecommended = findViewById(R.id.rvRecommended);
         ibLowerBottomSheet = findViewById(R.id.ibLowerBottomSheet);

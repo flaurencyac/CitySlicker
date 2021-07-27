@@ -109,6 +109,7 @@ public class ExploreFragment extends Fragment  {
         getLocationPermission();
         initMap();
 
+
     }
 
     private void initMap() {

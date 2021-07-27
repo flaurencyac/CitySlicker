@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import org.parceler.Parcels;
 
 import java.util.Arrays;
 import java.util.List;
+
 
 public class POIDialogFragment extends DialogFragment {
     private static final String TAG = "POIDialogFragment";

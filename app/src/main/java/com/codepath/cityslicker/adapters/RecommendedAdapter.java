@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.Utilities;
+import com.codepath.cityslicker.activities.MapsActivity;
 import com.codepath.cityslicker.models.RecommendedPlace;
 import com.codepath.cityslicker.models.Spot;
 import com.google.android.libraries.places.api.model.Place;
@@ -24,6 +25,8 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import tyrantgit.explosionfield.ExplosionField;
 
 public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.ViewHolder>{
     private static final String TAG = "RecommendedAdapter";
@@ -71,6 +74,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         private ImageView ivPhoto;
         private Button btnAddToTrip;
         private RecommendedSpotListener recommendedSpotListener;
+        private ExplosionField explosionField;
 
         public ViewHolder(@NonNull @NotNull View itemView, RecommendedSpotListener listener) {
             super(itemView);
@@ -97,10 +101,12 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
                 ratingBar.setRating(place.getRating().floatValue());
             }
             tvOpeningHours.setText("Open now: "+place.getOpen());
+            explosionField = ExplosionField.attach2Window((MapsActivity) context);
             btnAddToTrip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     recommendedSpotListener.addRecommendedSpot(recommendedPlaces.get(getAdapterPosition()));
+                    explosionField.explode(btnAddToTrip);
                 }
             });
         }
