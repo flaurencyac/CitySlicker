@@ -1,5 +1,6 @@
 package com.codepath.cityslicker.ui.profile;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.PagerAdapter;
@@ -27,11 +29,16 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.codepath.cityslicker.R;
+import com.codepath.cityslicker.adapters.ProfileFragmentAdapter;
+import com.codepath.cityslicker.adapters.TripsAdapter;
 import com.codepath.cityslicker.databinding.FragmentProfileBinding;
+import com.codepath.cityslicker.models.Trip;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -41,12 +48,14 @@ import org.w3c.dom.Text;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
     public static final String TAG = "ProfileFragment";
     public final static int PICK_PHOTO_CODE = 1000;
     private static final int NUM_PAGES = 2;
 
+    private Context context;
     private ProfileViewModel profileViewModel;
     private FragmentProfileBinding binding;
     private TextView tvUpdatePP;
@@ -54,8 +63,10 @@ public class ProfileFragment extends Fragment {
     private ImageView ivProfilePicture;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
-    private TabItem tabFriends;
-    private TabItem tabTrips;
+    private ProfileFragmentAdapter fragmentAdapter;
+
+    private List<Trip> trips = new ArrayList<>();
+    private List<ParseUser> friends = new ArrayList<>();
 
     private Bitmap bitmap;
 
@@ -64,7 +75,7 @@ public class ProfileFragment extends Fragment {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
+        context = getContext();
         tvUpdatePP = binding.tvUpdatePP;
         tvUsername = binding.tvUsername;
         tabLayout = binding.tabLayout;
@@ -91,6 +102,57 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        getAllTrips(fm);
+
+        tabLayout.addTab(tabLayout.newTab().setText("Trips"));
+        tabLayout.addTab(tabLayout.newTab().setText("Friends"));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) { }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) { }
+        });
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                tabLayout.selectTab(tabLayout.getTabAt(position));
+            }
+        });
+    }
+
+    private void getAllTrips(FragmentManager fm) {
+        ParseQuery<Trip> query = ParseQuery.getQuery("Trip");
+        query.include(Trip.KEY_OWNER);
+        query.whereEqualTo(Trip.KEY_OWNER, ParseUser.getCurrentUser());
+        query.addDescendingOrder("createdAt");
+        query.findInBackground(new FindCallback<Trip>() {
+            @Override
+            public void done(List<Trip> objects, ParseException e) {
+                if (e == null) {
+                    trips.addAll(objects);
+                    getAllFriends(fm);
+                } else {
+                    Log.e(TAG, "Issue getting trips");
+                }
+            }
+        });
+    }
+
+    private void getAllFriends(FragmentManager fm) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.addDescendingOrder("createdAt");
+        query.findInBackground((users, e) -> {
+            if (e == null) {
+                friends.addAll(users);
+                fragmentAdapter = new ProfileFragmentAdapter(fm, getLifecycle(), context, trips, friends);
+                viewPager.setAdapter(fragmentAdapter);
+            }
+        });
     }
 
     public void onPickPhoto(View view) {

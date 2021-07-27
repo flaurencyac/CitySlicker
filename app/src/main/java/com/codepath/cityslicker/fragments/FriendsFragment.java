@@ -2,6 +2,9 @@ package com.codepath.cityslicker.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,37 +12,27 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
 import com.codepath.cityslicker.R;
+import com.codepath.cityslicker.adapters.FriendAdapter;
 import com.codepath.cityslicker.adapters.TripsAdapter;
-import com.codepath.cityslicker.models.Trip;
-import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class TripsFragment extends Fragment {
-    private static final String TAG = "TripsFragment";
+public class FriendsFragment extends Fragment {
+    private static final String TAG = "FriendsFragment";
     private Context context;
 
-    private RecyclerView rvTrips;
-    private List<Trip> trips;
-    private TripsAdapter adapter;
+    private RecyclerView rvFriends;
+    private List<ParseUser> friends;
+    private FriendAdapter adapter;
 
 
-    public TripsFragment(Context context, List<Trip> trips) {
+    public FriendsFragment(Context context, List<ParseUser> users) {
         this.context = context;
-        this.trips = trips;
+        this.friends= users;
     }
 
     @Override
@@ -57,10 +50,10 @@ public class TripsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rvTrips = view.findViewById(R.id.rvTrips);
+        rvFriends = view.findViewById(R.id.rvTrips);
         LinearLayoutManager llm = new LinearLayoutManager(context);
-        rvTrips.setLayoutManager(llm);
-        adapter = new TripsAdapter(context, trips);
-        rvTrips.setAdapter(adapter);
+        rvFriends.setLayoutManager(llm);
+        adapter = new FriendAdapter(context, friends);
+        rvFriends.setAdapter(adapter);
     }
 }

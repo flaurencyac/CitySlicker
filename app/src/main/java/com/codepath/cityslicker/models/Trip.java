@@ -54,6 +54,8 @@ public class Trip extends ParseObject {
 
     public Integer getShoppingPreference() {return getInt(SHOPPING_PREFERENCE);}
 
+    public String getTripName() {return getString(KEY_NAME);}
+
     public void setEndDate(Date date) {put(KEY_END_DATE, date);}
 
     public void setBudget(Integer budget) {put(KEY_BUDGET, budget);}

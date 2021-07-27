@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.codepath.cityslicker.fragments.EditTripFragment;
+import com.codepath.cityslicker.fragments.TripsFragment;
 import com.codepath.cityslicker.models.Spot;
 import com.codepath.cityslicker.models.Trip;
 import com.google.android.libraries.places.api.model.Place;
@@ -39,6 +40,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
         this.tripId = tripId;
         this.trip = trip;
     }
+
 
     @NonNull
     @NotNull
