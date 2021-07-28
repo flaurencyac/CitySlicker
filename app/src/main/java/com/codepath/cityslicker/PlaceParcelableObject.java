@@ -54,11 +54,11 @@ public class PlaceParcelableObject implements Parcelable {
     @Override
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeStringArray(new String[] {this.name, this.id, this.address, this.phoneNumber});
-        dest.writeDouble(this.numOfRatings);
+        if (this.numOfRatings != null) {
+            dest.writeDouble(this.numOfRatings);
+        }
         dest.writeParcelable(this.openingHours, flags);
         dest.writeParcelable(this.websiteUri, flags);
-        dest.writeTypedArray(this.typesList.toArray(new Place.Type[0]), flags);
-        dest.writeTypedArray(this.photoMetadataList.toArray(new PhotoMetadata[0]), flags);
     }
 
     protected PlaceParcelableObject(android.os.Parcel in) {
