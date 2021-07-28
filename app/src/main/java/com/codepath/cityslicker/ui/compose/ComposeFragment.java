@@ -86,6 +86,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     public static ArrayList<String> preferences = new ArrayList<>();
     private ArrayList<String> collaborators = new ArrayList<>();
     private ArrayList<String> cityIDs = new ArrayList<>();
+    private ArrayList<String> cityNames = new ArrayList<>();
     private static ArrayList<String> usersList = new ArrayList<>();
     private ArrayList<String> regions = new ArrayList<>();
     private Boolean fromDateBool = false;
@@ -150,6 +151,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             public void onPlaceSelected(@NonNull @NotNull Place selectedPlace) {
                 addToRegions(selectedPlace.getName());
                 cityIDs.add(selectedPlace.getId());
+                cityNames.add(selectedPlace.getName());
             }
             @Override
             public void onError(@NonNull @NotNull Status status) {
@@ -332,6 +334,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         if (collaborators.size() >= 2) {
             trip.setCollaborators(new JSONArray(collaborators.subList(0, collaborators.size()-1)));
         }
+        trip.setCityNames(new JSONArray(cityNames));
         trip.setFamilyPreference(sbFamily.getProgress());
         trip.setFoodPreference(sbFood.getProgress());
         trip.setAdultPreference(sbAdult.getProgress());

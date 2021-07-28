@@ -22,6 +22,7 @@ public class Trip extends ParseObject {
     public static final String KEY_END_DATE = "endDate";
     public static final String KEY_BUDGET = "budget";
     public static final String KEY_REGIONS = "regions";
+    public static final String KEY_CITY_NAMES = "cityNames";
     private static final String SHOPPING_PREFERENCE = "shoppingPref";
     private static final String FOOD_PREFERENCE = "foodPref";
     private static final String ADULT_PREFERENCE = "adultPref";
@@ -31,6 +32,12 @@ public class Trip extends ParseObject {
     public void setPlaces(JSONArray allPlaces) { put(KEY_PLACES, allPlaces); }
 
     public ArrayList<String> getPlaces() {return (ArrayList<String>) get(KEY_PLACES); }
+
+    public ArrayList<String> getRegions() {return (ArrayList<String>) get(KEY_REGIONS);}
+
+    public void setCityNames(JSONArray cityNames) {put(KEY_CITY_NAMES, cityNames); }
+
+    public ArrayList<String> getCityNames() {return (ArrayList<String>) get(KEY_CITY_NAMES); }
 
     public void setCollaborators(JSONArray collaborators) {put(KEY_COLLABORATORS, collaborators);}
 

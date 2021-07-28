@@ -1,6 +1,7 @@
 package com.codepath.cityslicker.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.List;
 public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> {
     Context context;
     List<Trip> trips;
+    private TripClickedListener tripClickedListener;
 
     public TripsAdapter(Context context, List<Trip> trips) {
         this.context = context;
@@ -58,7 +60,11 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
 
         public void onClick(View v) {
             int position = getAdapterPosition();
-            // TODO start an activity for trip details
+            tripClickedListener.openTripDetails(trips.get(position));
         }
+    }
+
+    public interface TripClickedListener {
+        void openTripDetails(Trip trip);
     }
 }
