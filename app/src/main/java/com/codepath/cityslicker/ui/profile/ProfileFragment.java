@@ -63,10 +63,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ProfileFragment extends Fragment implements TripsAdapter.TripClickedListener {
+public class ProfileFragment extends Fragment {
     public static final String TAG = "ProfileFragment";
-    private final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
-            Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
     public final static int PICK_PHOTO_CODE = 1000;
 
     private Context context;
@@ -220,66 +218,5 @@ public class ProfileFragment extends Fragment implements TripsAdapter.TripClicke
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public void openTripDetails(Trip trip) {
-        PlacesClient placesClient = Places.createClient(context);
-        ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
-        ArrayList<ArrayList<String>> allPlaceIds = new ArrayList<ArrayList<String>>();
-        ArrayList<ArrayList<Spot>> allSpots = new ArrayList<ArrayList<Spot>>();
-        ArrayList<String> cityIds = new ArrayList<>();
-        ArrayList<String> cityNames = new ArrayList<>();
-
-        Intent intent = new Intent(context, DetailsActivity.class);
-        TripParcelableObject tripParcelableObject = new TripParcelableObject();
-        tripParcelableObject.setTrip(trip);
-
-        allPlaceIds = Trip.parseForPlaces(trip.getPlaces());
-        intent.putExtra("allPlaceIds", allPlaceIds);
-
-        cityIds = trip.getRegions();
-        intent.putExtra("cityIdList", cityIds);
-        cityNames = trip.getCityNames();
-        intent.putExtra("cityNames", cityNames);
-
-        for (ArrayList<String> city : allPlaceIds) {
-            ArrayList<Place> placesInCity = new ArrayList<>();
-            for (String id : city) {
-                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(id, placeFields);
-                placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                    Place place = response.getPlace();
-                    placesInCity.add(place);
-                }).addOnFailureListener((exception) -> {
-                    if (exception instanceof ApiException) {
-                        final ApiException apiException = (ApiException) exception;
-                        Log.e(TAG, "Place not found: "+exception.getMessage());
-                    }});
-            }
-            allPlaces.add(placesInCity);
-        }
-        for (ArrayList<String> city : allPlaceIds) {
-            ArrayList<Spot> spotsInCity = new ArrayList<>();
-            for (String id : city) {
-                ParseQuery<Spot> query = ParseQuery.getQuery("Spot");
-                query.whereEqualTo("trip", trip.getObjectId());
-                query.whereEqualTo("placeId", id);
-                query.findInBackground(new FindCallback<Spot>() {
-                    @Override
-                    public void done(List<Spot> spots, ParseException e) {
-                        spotsInCity.add(spots.get(0));
-                    }
-                });
-            }
-            allSpots.add(spotsInCity);
-        }
-        tripParcelableObject.setPlacesInParcel(allPlaces);
-        tripParcelableObject.setSpotsInParcel(allSpots);
-
-        intent.putExtra("tripObj", (Parcelable) tripParcelableObject);
-        intent.putExtra("tripId", trip.getObjectId());
-
-        intent.putExtra("trip", Parcels.wrap(trip));
-        startActivity(intent);
     }
 }

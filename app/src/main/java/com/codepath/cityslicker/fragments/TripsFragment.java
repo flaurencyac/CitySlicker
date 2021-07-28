@@ -1,7 +1,6 @@
 package com.codepath.cityslicker.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,10 +16,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.codepath.cityslicker.R;
-import com.codepath.cityslicker.activities.DetailsActivity;
 import com.codepath.cityslicker.adapters.TripsAdapter;
 import com.codepath.cityslicker.models.Trip;
-import com.codepath.cityslicker.ui.profile.ProfileFragment;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -28,11 +25,10 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
-import org.parceler.Parcels;
 
 import java.util.List;
 
-public class TripsFragment extends Fragment implements TripsAdapter.TripClickedListener {
+public class TripsFragment extends Fragment {
     private static final String TAG = "TripsFragment";
     private Context context;
 
@@ -64,21 +60,7 @@ public class TripsFragment extends Fragment implements TripsAdapter.TripClickedL
         rvTrips = view.findViewById(R.id.rvTrips);
         LinearLayoutManager llm = new LinearLayoutManager(context);
         rvTrips.setLayoutManager(llm);
-
-
-
-        adapter = new TripsAdapter(context, trips, (ProfileFragment) TripsFragment.this.getParentFragment());
-
-
-
-
+        adapter = new TripsAdapter(context, trips);
         rvTrips.setAdapter(adapter);
-    }
-
-    @Override
-    public void openTripDetails(Trip trip) {
-        Intent intent = new Integer(context, DetailsActivity.class);
-        intent.putExtra("trip", Parcels.wrap(trip));
-        startActivity(intent);
     }
 }

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-@Parcel(analyze = Trip.class)
 @ParseClassName("Trip")
 public class Trip extends ParseObject {
     public static final String KEY_PLACES = "places";
@@ -30,9 +29,6 @@ public class Trip extends ParseObject {
     private static final String ADULT_PREFERENCE = "adultPref";
     private static final String FAMILY_PREFERENCE = "familyPref";
     private static final String ATTRACTIONS_PREFERENCE = "attractionsPref";
-
-    public Trip() {
-    }
 
     public void setPlaces(JSONArray allPlaces) { put(KEY_PLACES, allPlaces); }
 
