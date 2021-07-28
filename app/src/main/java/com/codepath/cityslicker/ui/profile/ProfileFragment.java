@@ -54,6 +54,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
@@ -278,6 +279,7 @@ public class ProfileFragment extends Fragment implements TripsAdapter.TripClicke
         intent.putExtra("tripObj", (Parcelable) tripParcelableObject);
         intent.putExtra("tripId", trip.getObjectId());
 
+        intent.putExtra("trip", Parcels.wrap(trip));
         startActivity(intent);
     }
 }

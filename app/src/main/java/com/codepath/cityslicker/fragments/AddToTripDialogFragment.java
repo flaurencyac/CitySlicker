@@ -149,6 +149,8 @@ public class AddToTripDialogFragment extends DialogFragment {
             tvNumRatings.setText("(" + place.getUserRatingsTotal()+")");
             if (place.getRating() != null) {
                 ratingBar.setRating(place.getRating().floatValue());
+            } else {
+                ratingBar.setRating(0);
             }
             if (place.getWebsiteUri()!= null) {
                 tvWebsiteLink.setText(""+ place.getWebsiteUri());

@@ -68,65 +68,68 @@ public class DetailsActivity extends AppCompatActivity {
     private Trip trip;
     private String tripId;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         context = DetailsActivity.this;
 
-        TripParcelableObject parcel = Parcels.unwrap(getIntent().getParcelableExtra("tripObj"));
-        trip = parcel.getTrip();
-        allPlaces = parcel.getPlacesInParcel();
-        allSpots = parcel.getSpotsInParcel();
-        tripId = getIntent().getStringExtra("tripId");
-        cityNames = getIntent().getStringArrayListExtra("cityNames");
-        cityIds = getIntent().getStringArrayListExtra("cityIdList");
-        allPlaceIds = (ArrayList<ArrayList<String>>) getIntent().getExtras().getSerializable("allPlaceIds");
+        // TripParcelableObject parcel = Parcels.unwrap(getIntent().getParcelableExtra("tripObj"));
+        trip = (Trip) Parcels.unwrap(getIntent().getParcelableExtra("trip"));
 
-        frameLayout = findViewById(R.id.FrameLayout);
-        konfettiView = findViewById(R.id.viewKonfetti);
-        citiesSpinner = findViewById(R.id.citiesSpinner);
-        btnDone = findViewById(R.id.btnDone);
-
-        arrayAdapter = new ArrayAdapter<>(context, R.layout.support_simple_spinner_dropdown_item, cityNames);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        fragmentManager = getSupportFragmentManager();
-        fragmentAdapter = new FragmentAdapter(fragmentManager, getLifecycle(), context, cityIds.size(), allPlaces, allSpots, tripId, trip);
-
-        citiesSpinner.setAdapter(arrayAdapter);
-        citiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(context, "Selected "+cityNames.get(position), Toast.LENGTH_SHORT).show();
-                selectFragment(position);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                selectFragment(0);
-
-            }
-        });
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        plane = ContextCompat.getDrawable(context, R.drawable.ic_baseline_flight_24);
-        planeShape  = new Shape.DrawableShape(plane, true);
-        konfettiView.build()
-                .addColors(Color.TRANSPARENT, Color.RED, Color.BLUE, Color.WHITE, Color.argb( 100, 0,191,255))
-                .setDirection(0.0, 359.0)
-                .setSpeed(1f, 5f)
-                .setFadeOutEnabled(true)
-                .setTimeToLive(2000L)
-                .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, planeShape)
-                .addSizes(new Size(12, 5f))
-                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
-                .streamFor(300, 3000L);
+//        trip = parcel.getTrip();
+//        allPlaces = parcel.getPlacesInParcel();
+//        allSpots = parcel.getSpotsInParcel();
+//        tripId = getIntent().getStringExtra("tripId");
+//        cityNames = getIntent().getStringArrayListExtra("cityNames");
+//        cityIds = getIntent().getStringArrayListExtra("cityIdList");
+//        allPlaceIds = (ArrayList<ArrayList<String>>) getIntent().getExtras().getSerializable("allPlaceIds");
+//
+//        frameLayout = findViewById(R.id.FrameLayout);
+//        konfettiView = findViewById(R.id.viewKonfetti);
+//        citiesSpinner = findViewById(R.id.citiesSpinner);
+//        btnDone = findViewById(R.id.btnDone);
+//
+//        arrayAdapter = new ArrayAdapter<>(context, R.layout.support_simple_spinner_dropdown_item, cityNames);
+//        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        fragmentManager = getSupportFragmentManager();
+//        fragmentAdapter = new FragmentAdapter(fragmentManager, getLifecycle(), context, cityIds.size(), allPlaces, allSpots, tripId, trip);
+//
+//        citiesSpinner.setAdapter(arrayAdapter);
+//        citiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(context, "Selected "+cityNames.get(position), Toast.LENGTH_SHORT).show();
+//                selectFragment(position);
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                selectFragment(0);
+//
+//            }
+//        });
+//        btnDone.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(context, MainActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        plane = ContextCompat.getDrawable(context, R.drawable.ic_baseline_flight_24);
+//        planeShape  = new Shape.DrawableShape(plane, true);
+//        konfettiView.build()
+//                .addColors(Color.TRANSPARENT, Color.RED, Color.BLUE, Color.WHITE, Color.argb( 100, 0,191,255))
+//                .setDirection(0.0, 359.0)
+//                .setSpeed(1f, 5f)
+//                .setFadeOutEnabled(true)
+//                .setTimeToLive(2000L)
+//                .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, planeShape)
+//                .addSizes(new Size(12, 5f))
+//                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+//                .streamFor(300, 3000L);
 
     }
 

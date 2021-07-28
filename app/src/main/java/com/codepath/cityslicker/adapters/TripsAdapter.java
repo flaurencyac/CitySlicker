@@ -11,9 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.cityslicker.R;
+import com.codepath.cityslicker.activities.DetailsActivity;
 import com.codepath.cityslicker.models.Trip;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -22,9 +24,10 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
     List<Trip> trips;
     private TripClickedListener tripClickedListener;
 
-    public TripsAdapter(Context context, List<Trip> trips) {
+    public TripsAdapter(Context context, List<Trip> trips, TripClickedListener listener) {
         this.context = context;
         this.trips = trips;
+        this.tripClickedListener = listener;
     }
 
     @NonNull
@@ -32,7 +35,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
     @Override
     public TripsAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View tripView = LayoutInflater.from(context).inflate(R.layout.item_trip, parent, false);
-        return new ViewHolder(tripView);
+        return new ViewHolder(tripView, tripClickedListener);
     }
 
     @Override
@@ -48,23 +51,42 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTripTitle;
+        private TripClickedListener tripClickedListener;
 
-        public ViewHolder (View itemView) {
+        public ViewHolder (View itemView, TripClickedListener listener) {
             super(itemView);
             tvTripTitle = itemView.findViewById(R.id.tvFriendName);
+            this.tripClickedListener = listener;
         }
 
         public void bind(Trip trip) {
             tvTripTitle.setText(trip.getTripName());
+
+//            tvTripTitle.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //int position = getAdapterPosition();
+//                    tripClickedListener.openTripDetails(getAdapterPosition());
+//                }
+//            });
+
+
+            Intent intent = new Integer(context, DetailsActivity.class);
+            intent.putExtra("trip", Parcels.wrap(trip));
+            startActivity(intent);
+
+
+
         }
 
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            tripClickedListener.openTripDetails(trips.get(position));
-        }
+//        @Override
+//        public void onClick(View v) {
+//            int position = getAdapterPosition();
+//            tripClickedListener.openTripDetails(trips.get(position));
+//        }
     }
 
-    public interface TripClickedListener {
-        void openTripDetails(Trip trip);
-    }
+//    public interface TripClickedListener {
+//        void openTripDetails(int position);
+//    }
 }
