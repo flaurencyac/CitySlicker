@@ -201,7 +201,6 @@ public class ExploreFragment extends Fragment  {
     }
 
     public void showPOIDetailsFragment(PointOfInterest poi) {
-        Toast.makeText(getContext(), "Clicked: " + poi.name + "Place ID:" + poi.placeId + "Latitude:" + poi.latLng.latitude + " Longitude:" + poi.latLng.longitude, Toast.LENGTH_SHORT).show();
         FragmentManager fm = getChildFragmentManager();
         POIDialogFragment poiDialogFragment = POIDialogFragment.newInstance(poi);
         poiDialogFragment.show(fm, "dialog_fragment_poi");
