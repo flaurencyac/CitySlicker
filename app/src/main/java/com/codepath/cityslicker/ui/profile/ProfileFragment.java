@@ -128,6 +128,7 @@ public class ProfileFragment extends Fragment {
     private void getAllTrips(FragmentManager fm) {
         ParseQuery<Trip> query = ParseQuery.getQuery("Trip");
         query.include(Trip.KEY_OWNER);
+        query.include(Trip.KEY_PLACES);
         query.whereEqualTo(Trip.KEY_OWNER, ParseUser.getCurrentUser());
         query.addDescendingOrder("createdAt");
         query.findInBackground(new FindCallback<Trip>() {
