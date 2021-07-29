@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlPlaceDetailDialog"
-    android:layout_width="350dp"
+    android:layout_width="375dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
@@ -15,9 +15,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="false"
+        android:layout_alignParentEnd="true"
         android:layout_marginStart="1dp"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="33dp"
         android:autoSizeMaxTextSize="30sp"
         android:autoSizeMinTextSize="10sp"
         android:autoSizeStepGranularity="2sp"
@@ -69,7 +70,7 @@
 
     <TextView
         android:id="@+id/tvWebsiteLink"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ratingBar"
         android:layout_alignParentStart="true"
@@ -81,7 +82,7 @@
 
     <TextView
         android:id="@+id/tvAddress"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvWebsiteLink"
         android:layout_alignParentStart="true"
@@ -101,43 +102,37 @@
 
     <ImageView
         android:id="@+id/ivPhoto"
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_below="@+id/tvPlaceName"
-        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="false"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="100dp"
         android:layout_marginTop="6dp"
         android:scaleType="centerCrop"
         tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tvOpeningHours"
-        android:layout_width="181dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAddress"
+        android:layout_below="@+id/tvPhoneNumber"
+        android:layout_alignStart="@+id/tvPhoneNumber"
         android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="false"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/tvPhoneNumber"
         tools:text="Opening Hours:" />
+
 
     <Button
         android:id="@+id/btnAddToTrip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvOpeningHours"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="false"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="4dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp"
         android:backgroundTint="@color/cityBlue"
         android:text="Add to Trip"
         android:textColor="#FFFFFF" />
-
 
     <ImageButton
         android:id="@+id/ibClose"
