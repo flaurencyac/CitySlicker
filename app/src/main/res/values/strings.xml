@@ -5,6 +5,5 @@
     <string name="title_profile">Profile</string>
     <string name="google_maps_api_key">AIzaSyAd8jnV_W6yqtumsthlFj9v_bdjUWCSVXE</string>
     <string name="title_activity_maps">Map</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
