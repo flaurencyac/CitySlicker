@@ -125,11 +125,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> allSpotIds = new ArrayList<>();
     private ArrayList<RecommendedPlace> allRecommendedPlaces = new ArrayList<RecommendedPlace>();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        //this.context = getApplicationContext();
         this.context = MapsActivity.this;
         btnNext = findViewById(R.id.btnNext);
         rvRecommended = findViewById(R.id.rvRecommended);
@@ -448,7 +448,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void addRecommendedSpot(RecommendedPlace recommendedPlace) {
-        // TODO add the recommended place to list of current city places
         Spot spot = new Spot();
         spot.setName(recommendedPlace.getName());
         spot.setPlaceID(recommendedPlace.getPlaceId());
