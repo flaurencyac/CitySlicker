@@ -52,7 +52,6 @@ public class PlaceParcelableObject implements Parcelable {
         name = poi.name;
         id = poi.placeId;
         latLng = poi.latLng;
-        // TODO: use placeID to make a Place Details request to fill out the other fields
     }
 
     protected PlaceParcelableObject(android.os.Parcel in) {

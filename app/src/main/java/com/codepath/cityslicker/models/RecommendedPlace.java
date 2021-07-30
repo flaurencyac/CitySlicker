@@ -3,13 +3,13 @@ package com.codepath.cityslicker.models;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 @Parcel
 public class RecommendedPlace {
+    private static final String TAG = "RecommendedPlace";
+
     private String name;
     private String vicinity;
     private Double weight;
@@ -71,10 +71,6 @@ public class RecommendedPlace {
 
     public static ArrayList<RecommendedPlace> sortRecommendedPlaces(ArrayList<RecommendedPlace> unsortedList) {
         return reverseList(quicksort(unsortedList, 0, unsortedList.size()-1));
-    }
-
-    public void getPhoto() {
-        // TODO make place photo request
     }
 
     public void setWeight(Integer weight) {

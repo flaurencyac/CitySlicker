@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.R;
+import com.codepath.cityslicker.Utilities;
 import com.codepath.cityslicker.activities.DetailsActivity;
 import com.codepath.cityslicker.fragments.EditTripFragment;
 import com.codepath.cityslicker.models.Spot;
@@ -145,7 +146,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         public void bind(Place place) {
             tvPlaceName.setText(place.getName());
             tvAddress.setText(place.getAddress());
-            fetchPhoto(place.getPhotoMetadatas());
+            Utilities.fetchPhoto(context, place.getPhotoMetadatas(), ivImage, TAG);
             btnRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -265,30 +266,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                         } else {
                             Log.i(TAG, "Saved spot time!");
                         }
-                    }
-                });
-            }
-        }
-
-        private void fetchPhoto(List<PhotoMetadata> photoMetadataList) {
-            Places.initialize(context, BuildConfig.MAPS_API_KEY);
-            PlacesClient placesClient = Places.createClient(context);
-            if (photoMetadataList == null || photoMetadataList.isEmpty()) {
-                Log.i(TAG, "No photo metadata.");
-                bitmap = null;
-            } else {
-                final PhotoMetadata photoMetadata = photoMetadataList.get(0);
-                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata).build();
-                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-                    bitmap = fetchPhotoResponse.getBitmap();
-                    ivImage.setImageBitmap(bitmap);
-                    Log.i(TAG, "photo fetched");
-                }).addOnFailureListener((exception) -> {
-                    if (exception instanceof ApiException) {
-                        final ApiException apiException = (ApiException) exception;
-                        Log.e(TAG, "Place not found: " + exception.getMessage());
-                        final int statusCode = apiException.getStatusCode();
-                        Log.e(TAG, "Place not found: " + statusCode);
                     }
                 });
             }

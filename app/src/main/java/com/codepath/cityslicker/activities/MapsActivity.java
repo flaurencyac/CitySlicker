@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -74,6 +75,7 @@ import nl.dionsegijn.konfetti.KonfettiView;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AddToTripDialogFragment.AddToTripPOIDialogFragmentListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, RecommendedAdapter.RecommendedSpotListener {
 
+    public static final Integer NUMBEROFCOLUMNS = 2;
     private static final String TAG = "MapsActivity";
     private static final String TYPE_FOOD = "restaurant";
     private static final String KEYWORD_FAMILY = "kids";
@@ -178,9 +180,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
-        LinearLayoutManager llm = new LinearLayoutManager(context);
-        rvRecommended.setLayoutManager(llm);
-
+        //LinearLayoutManager llm = new LinearLayoutManager(context);
+        //rvRecommended.setLayoutManager(llm);
+        rvRecommended.setLayoutManager(new GridLayoutManager(this, NUMBEROFCOLUMNS));
         buildGoogleApiClient();
     }
 

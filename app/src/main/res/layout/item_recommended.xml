@@ -94,19 +94,16 @@
         android:layout_below="@+id/tvAddress"
         android:layout_alignParentStart="true"
         android:layout_marginStart="7dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="7dp"
         tools:text="(123) 456-7899" />
 
     <ImageView
         android:id="@+id/ivPhoto"
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_below="@+id/tvPlaceName"
-        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="false"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="131dp"
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="0dp"
         android:scaleType="centerCrop"
         tools:src="@tools:sample/avatars" />
 
@@ -114,13 +111,13 @@
         android:id="@+id/tvOpeningHours"
         android:layout_width="181dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAddress"
+        android:layout_below="@+id/tvPhoneNumber"
+        android:layout_alignStart="@+id/tvPhoneNumber"
         android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="false"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/tvPhoneNumber"
-        tools:text="Opening Hours:" />
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="7dp"
+        tools:text="Open now: yes" />
 
     <Button
         android:id="@+id/btnAddToTrip"
@@ -128,10 +125,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvOpeningHours"
         android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="2dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
         android:backgroundTint="@color/cityBlue"
         android:text="Add to Trip"
         android:textColor="#FFFFFF" />
