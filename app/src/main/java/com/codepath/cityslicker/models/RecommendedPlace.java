@@ -1,5 +1,7 @@
 package com.codepath.cityslicker.models;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
@@ -37,14 +39,6 @@ public class RecommendedPlace {
         }
     }
 
-    private static ArrayList<RecommendedPlace> reverseList(ArrayList<RecommendedPlace> placesList) {
-        ArrayList<RecommendedPlace> reversedList = new ArrayList<RecommendedPlace>();
-        for (int i = 0; i<placesList.size();i++) {
-            reversedList.add(placesList.get(placesList.size()-1-i));
-        }
-        return reversedList;
-    }
-
     public static ArrayList<RecommendedPlace> quicksort(ArrayList<RecommendedPlace> lst, int start, int end) {
         if (start < end) {
             int pivot = start;
@@ -52,10 +46,10 @@ public class RecommendedPlace {
             int right = end;
             double pivotValue = lst.get(pivot).getWeight();
             while (left <= right) {
-                while (left <= end && pivotValue >= lst.get(left).getWeight()) {
+                while (left <= end && lst.get(left).getWeight() >=  pivotValue) {
                     left += 1;
                 }
-                while (right > start && pivotValue < lst.get(right).getWeight()) {
+                while (right > start && lst.get(right).getWeight() < pivotValue) {
                     right -= 1;
                 }
                 if (left < right) {
@@ -70,7 +64,7 @@ public class RecommendedPlace {
     }
 
     public static ArrayList<RecommendedPlace> sortRecommendedPlaces(ArrayList<RecommendedPlace> unsortedList) {
-        return reverseList(quicksort(unsortedList, 0, unsortedList.size()-1));
+        return quicksort(unsortedList, 0, unsortedList.size()-1);
     }
 
     public void setWeight(Integer weight) {
