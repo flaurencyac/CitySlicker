@@ -138,24 +138,8 @@ public class AddToTripDialogFragment extends DialogFragment {
             mPlace = place;
             placeId = place.getId();
             placeName = place.getName();
-            tvPlaceName.setText(place.getName());
-            if (place.getPriceLevel() != null) {
-                tvPrice.setText(Utilities.convertToDollars(place.getPriceLevel()));
-            }
+            Utilities.setDialogViews(getContext(), mPlace, tvPlaceName, tvAddress, tvPrice, tvPhoneNumber, tvRating, tvNumRatings, tvWebsiteLink, tvOpeningHours, ratingBar);
             Utilities.fetchPhoto(getContext(), place.getPhotoMetadatas(), ivPhoto, TAG);
-            tvAddress.setText(place.getAddress());
-            tvPhoneNumber.setText(place.getPhoneNumber());
-            tvRating.setText("" + place.getRating());
-            tvNumRatings.setText("(" + place.getUserRatingsTotal()+")");
-            if (place.getRating() != null) {
-                ratingBar.setRating(place.getRating().floatValue());
-            }
-            if (place.getWebsiteUri()!= null) {
-                tvWebsiteLink.setText(""+ place.getWebsiteUri());
-            }
-            if (place.getOpeningHours() != null) {
-                tvOpeningHours.setText(Utilities.getOpeningHours(place));
-            }
         });
     }
 

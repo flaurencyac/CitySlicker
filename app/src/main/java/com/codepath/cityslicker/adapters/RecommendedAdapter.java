@@ -107,15 +107,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
             this.recommendedSpotListener = listener;
         }
 
-        public void bind(RecommendedPlace place) {
-            tvPlaceName.setText(place.getName());
-            tvAddress.setText(place.getVicinity());
-            tvNumRatings.setText("(" + place.getUserRatingsTotal()+")");
-            tvRating.setText("" + place.getRating());
-            if (place.getRating() != null) {
-                ratingBar.setRating(place.getRating().floatValue());
-            }
-            tvOpeningHours.setText("Open now: "+place.getOpen());
+        public void bind(RecommendedPlace recommendedPlace) {
             explosionField = ExplosionField.attach2Window((MapsActivity) context);
             btnAddToTrip.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -124,24 +116,17 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
                     explosionField.explode(btnAddToTrip);
                 }
             });
-            setPhoto(place, ivPhoto, tvPrice, tvWebsiteLink, tvPhoneNumber);
-
+            final FetchPlaceRequest request = FetchPlaceRequest.newInstance(recommendedPlace.getPlaceId(), placeFields);
+            placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                Place place = response.getPlace();
+                Utilities.fetchPhoto(context, place.getPhotoMetadatas(), ivPhoto, TAG);
+                Utilities.setDialogViews(context, place, tvPlaceName, tvAddress, tvPrice, tvPhoneNumber, tvRating, tvNumRatings, tvWebsiteLink, tvOpeningHours, ratingBar);
+            }).addOnFailureListener((exception) -> {
+                if (exception instanceof ApiException) {
+                    final ApiException apiException = (ApiException) exception;
+                    Log.e(TAG, "Place not found: "+exception.getMessage());
+                }});
         }
-    }
-
-    private void setPhoto(RecommendedPlace recommendedPlace, ImageView ivPhoto, TextView tvPrice, TextView tvWebsiteLink, TextView tvPhoneNumber) {
-        final FetchPlaceRequest request = FetchPlaceRequest.newInstance(recommendedPlace.getPlaceId(), placeFields);
-        placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-            Place place = response.getPlace();
-            Utilities.fetchPhoto(context, place.getPhotoMetadatas(), ivPhoto, TAG);
-            tvPrice.setText(Utilities.convertToDollars(place.getPriceLevel()));
-            tvWebsiteLink.setText(""+place.getWebsiteUri());
-            tvPhoneNumber.setText(""+place.getPhoneNumber());
-        }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                final ApiException apiException = (ApiException) exception;
-                Log.e(TAG, "Place not found: "+exception.getMessage());
-            }});
     }
 
     public interface RecommendedSpotListener {

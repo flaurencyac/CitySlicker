@@ -56,6 +56,7 @@ public class POIDialogFragment extends DialogFragment {
     private TextView tvAddress;
     private TextView tvPhoneNumber;
     private TextView tvOpeningHours;
+    private TextView tvPrice;
     private ImageView ivPhoto;
     private RatingBar ratingBar;
     private Button btnExistingTrip;
@@ -108,6 +109,7 @@ public class POIDialogFragment extends DialogFragment {
         ratingBar = view.findViewById(R.id.ratingBar);
         btnExistingTrip = view.findViewById(R.id.btnAddToTrip);
         ibClose = view.findViewById(R.id.ibClose);
+        tvPrice = view.findViewById(R.id.tvPrice);
 
         PlaceParcelableObject placeParcelableObject = (PlaceParcelableObject) getArguments().getParcelable("place");
         Places.initialize(getContext(), BuildConfig.MAPS_API_KEY);
@@ -115,23 +117,9 @@ public class POIDialogFragment extends DialogFragment {
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeParcelableObject.getId(), placeFields);
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
-            tvPlaceName.setText(place.getName());
             Utilities.fetchPhoto(getContext(), place.getPhotoMetadatas(), ivPhoto, TAG);
-            tvAddress.setText(place.getAddress());
-            tvPhoneNumber.setText(place.getPhoneNumber());
-            tvRating.setText("" + place.getRating());
-            tvNumRatings.setText("(" + place.getUserRatingsTotal()+")");
-            if (place.getRating() != null) {
-                ratingBar.setRating(place.getRating().floatValue());
-            }
-            if (place.getWebsiteUri()!= null) {
-                tvWebsiteLink.setText(""+ place.getWebsiteUri());
-            }
-            if (place.getOpeningHours() != null) {
-                tvOpeningHours.setText(Utilities.getOpeningHours(place));
-            }
+            Utilities.setDialogViews(getContext(), place, tvPlaceName, tvAddress, tvPrice, tvPhoneNumber, tvRating, tvNumRatings, tvWebsiteLink, tvOpeningHours, ratingBar);
         });
-
         ibClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

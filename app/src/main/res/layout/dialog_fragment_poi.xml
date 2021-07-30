@@ -157,5 +157,17 @@
         android:backgroundTint="@color/cityBlue"
         android:src="@drawable/quantum_ic_clear_grey600_24"
         android:tint="#FFFFFF" />
+    <TextView
+        android:id="@+id/tvPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivPhoto"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="134dp"
+        android:textColor="@color/black"
+        tools:text="$$$" />
 
 </RelativeLayout>

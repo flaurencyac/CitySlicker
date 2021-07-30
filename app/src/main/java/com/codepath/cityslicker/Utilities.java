@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.Places;
@@ -66,6 +68,31 @@ public class Utilities {
                     Log.e(TAG, "Place not found: " + statusCode);
                 }
             });
+        }
+    }
+
+    public static void setDialogViews(Context context, Place place, TextView tvPlaceName, TextView tvAddress, TextView tvPrice, TextView tvPhoneNumber,
+                                      TextView tvRating, TextView tvNumRatings, TextView tvWebsiteLink, TextView tvOpeningHours,  RatingBar ratingBar) {
+        tvPlaceName.setText(place.getName());
+        tvAddress.setText(place.getAddress());
+        if (place.getPriceLevel() != null) {
+            tvPrice.setText(Utilities.convertToDollars(place.getPriceLevel()));
+        }
+        if (place.getPhoneNumber() != null) {
+            tvPhoneNumber.setText(place.getPhoneNumber());
+        } else {
+            tvPhoneNumber.setText("Not available for this location");
+        }
+        tvRating.setText("" + place.getRating());
+        tvNumRatings.setText("(" + place.getUserRatingsTotal()+")");
+        if (place.getRating() != null) {
+            ratingBar.setRating(place.getRating().floatValue());
+        }
+        if (place.getWebsiteUri()!= null) {
+            tvWebsiteLink.setText(""+ place.getWebsiteUri());
+        }
+        if (place.getOpeningHours() != null) {
+            tvOpeningHours.setText(Utilities.getOpeningHours(place));
         }
     }
 
