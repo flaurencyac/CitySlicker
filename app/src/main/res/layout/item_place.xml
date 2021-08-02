@@ -4,17 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="30dp">
+    android:layout_marginTop="0dp"
+    android:padding="5dp">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/CardView"
         android:layout_width="match_parent"
         android:layout_height="280dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
         card_view:cardBackgroundColor="#FFFFFF"
         card_view:cardCornerRadius="25dp"
-        card_view:cardElevation="8dp">
+        card_view:cardElevation="8dp"
+        card_view:strokeColor="@color/cityBlue"
+        card_view:strokeWidth="1dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -22,13 +26,14 @@
 
             <Button
                 android:id="@+id/btnRemove"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_width="91dp"
+                android:layout_height="26dp"
+                android:layout_below="@+id/etDate"
+                android:layout_alignStart="@+id/etDate"
                 android:layout_alignParentEnd="false"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="200dp"
+                android:layout_marginStart="256dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
-                android:layout_toEndOf="@+id/etDate"
                 android:background="#1787EA"
                 android:text="Remove"
                 android:textColor="#FFFFFF"
@@ -36,26 +41,30 @@
 
             <TextView
                 android:id="@+id/tvPlaceName"
-                android:layout_width="239dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="false"
-                android:layout_marginStart="140dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/ivImage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 tools:text="Madame Tussauds" />
 
             <TextView
                 android:id="@+id/tvAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="140dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="40dp"
+                android:layout_toEndOf="@+id/ivImage"
                 android:text="Address" />
 
             <EditText
                 android:id="@+id/etTime"
-                android:layout_width="wrap_content"
+                android:layout_width="179dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
                 android:layout_marginTop="130dp"
+                android:layout_toEndOf="@+id/imageView7"
                 android:ems="10"
                 android:hint="Enter Time"
                 android:inputType="time" />
@@ -72,13 +81,35 @@
 
             <EditText
                 android:id="@+id/etDate"
-                android:layout_width="wrap_content"
+                android:layout_width="348dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
                 android:layout_marginTop="180dp"
+                android:layout_toEndOf="@+id/imageView12"
                 android:ems="10"
                 android:hint="Enter Date"
                 android:inputType="date" />
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_below="@+id/ivImage"
+                android:layout_alignStart="@+id/ivImage"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="30dp"
+                card_view:srcCompat="@drawable/ic_baseline_access_time_24" />
+
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_below="@+id/ivImage"
+                android:layout_alignStart="@+id/ivImage"
+                android:layout_marginStart="-1dp"
+                android:layout_marginTop="77dp"
+                card_view:srcCompat="@drawable/ic_baseline_calendar_today_24" />
         </RelativeLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </RelativeLayout>

@@ -7,8 +7,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -17,6 +22,8 @@ import androidx.core.content.ContextCompat;
 
 import com.codepath.cityslicker.MainActivity;
 import com.codepath.cityslicker.R;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -43,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     private KonfettiView konfettiView;
     private Drawable plane;
     private Shape.DrawableShape planeShape;
+    private ImageView ivGlobe;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +66,16 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         switchPasswordVisibility = findViewById(R.id.switchPasswordVisibility);
         btnLogin = findViewById(R.id.btnLogin);
+        ivGlobe  = findViewById(R.id.ivGlobe);
         konfettiView = findViewById(R.id.viewKonfetti);
+
+        //RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        //rotate.setDuration(1000000);
+        //rotate.setInterpolator(new LinearInterpolator());
+
+        Animation aniRotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clockwise);
+        ivGlobe.startAnimation(aniRotate);
+
         plane = ContextCompat.getDrawable(context, R.drawable.ic_baseline_flight_24);
         planeShape  = new Shape.DrawableShape(plane, true);
         konfettiView.build()

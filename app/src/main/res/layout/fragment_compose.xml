@@ -44,7 +44,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:textColor="@color/cityBlue"
-        tools:text="collaborators" />
+        tools:text="Collaborators:" />
 
     <fragment
         android:id="@+id/autocomplete_fragment"
