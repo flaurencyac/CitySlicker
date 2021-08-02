@@ -83,7 +83,7 @@ public class Trip extends ParseObject {
     public void setAttractionsPreference(Integer n) {put(ATTRACTIONS_PREFERENCE, n);}
 
     // Note: oneDimenLst has this format: ["[placeId1, placeId2, placeId3]", "[placeId1, placeId2]", "[placeId1, placeId2, placeId3]"]
-    public static ArrayList<ArrayList<String>> parseForPlaces(ArrayList<String> oneDimenLst) {
+    public static ArrayList<ArrayList<String>> parseForSpots(ArrayList<String> oneDimenLst) {
         ArrayList<ArrayList<String>> placeIds = new ArrayList<ArrayList<String>>();
         for(int i =0; i< oneDimenLst.size(); i++) {
             String placesInCity = oneDimenLst.get(i).substring(1, oneDimenLst.get(i).length()-1);

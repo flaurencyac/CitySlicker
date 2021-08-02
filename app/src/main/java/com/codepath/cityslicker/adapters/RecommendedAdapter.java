@@ -90,6 +90,8 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         private RecommendedSpotListener recommendedSpotListener;
         private ExplosionField explosionField;
 
+        private ArrayList<Place> places = new ArrayList<>();
+
         public ViewHolder(@NonNull @NotNull View itemView, RecommendedSpotListener listener) {
             super(itemView);
             tvPlaceName=itemView.findViewById(R.id.tvPlaceName);
@@ -121,6 +123,8 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
                 Place place = response.getPlace();
                 Utilities.fetchPhoto(context, place.getPhotoMetadatas(), ivPhoto, TAG);
                 Utilities.setDialogViews(context, place, tvPlaceName, tvAddress, tvPrice, tvPhoneNumber, tvRating, tvNumRatings, tvWebsiteLink, tvOpeningHours, ratingBar);
+                places.add(place);
+                Log.i(TAG, "DEBUG rec places size:"+places.size());
             }).addOnFailureListener((exception) -> {
                 if (exception instanceof ApiException) {
                     final ApiException apiException = (ApiException) exception;

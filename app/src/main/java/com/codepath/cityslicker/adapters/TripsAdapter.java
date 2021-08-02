@@ -16,6 +16,8 @@ import com.codepath.cityslicker.MainActivity;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.TripParcelableObject;
 import com.codepath.cityslicker.activities.DetailsActivity;
+import com.codepath.cityslicker.activities.MapsActivity;
+import com.codepath.cityslicker.models.RecommendedPlace;
 import com.codepath.cityslicker.models.Spot;
 import com.codepath.cityslicker.models.Trip;
 import com.google.android.gms.common.api.ApiException;
@@ -86,7 +88,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
         public void openTripDetails(Trip trip) {
             PlacesClient placesClient = Places.createClient(context);
             ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
-            ArrayList<ArrayList<String>> allPlaceIds = new ArrayList<ArrayList<String>>();
+            ArrayList<ArrayList<String>> allSpotIds = new ArrayList<ArrayList<String>>();
             ArrayList<ArrayList<Spot>> allSpots = new ArrayList<ArrayList<Spot>>();
             ArrayList<String> cityIds = new ArrayList<>();
             ArrayList<String> cityNames = new ArrayList<>();
@@ -95,56 +97,66 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
             TripParcelableObject tripParcelableObject = new TripParcelableObject();
             tripParcelableObject.setTrip(trip);
 
-            allPlaceIds = Trip.parseForPlaces(trip.getPlaces());
-            intent.putExtra("allPlaceIds", allPlaceIds);
+            allSpotIds = Trip.parseForSpots(trip.getPlaces());
+            intent.putExtra("allPlaceIds", allSpotIds);
 
             cityIds = trip.getRegions();
             intent.putExtra("cityIdList", cityIds);
             cityNames = trip.getCityNames();
             intent.putExtra("cityNames", cityNames);
 
-            for (ArrayList<String> city : allPlaceIds) {
-                ArrayList<Place> placesInCity = new ArrayList<>();
-                for (String id : city) {
-                    final FetchPlaceRequest request = FetchPlaceRequest.newInstance(id, placeFields);
-                    placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                        Place place = response.getPlace();
-                        placesInCity.add(place);
-                    }).addOnFailureListener((exception) -> {
-                        if (exception instanceof ApiException) {
-                            final ApiException apiException = (ApiException) exception;
-                            Log.e(TAG, "Place not found: "+exception.getMessage());
-                        } else {
-                            Log.e(TAG, "Other exception: "+exception.getMessage());
+            ArrayList<ArrayList<String>> finalAllSpotIds = allSpotIds;
+            for (int i = 0; i < cityIds.size() ; i ++) {
+                String cityId = cityIds.get(i);
+                ParseQuery<Spot> query = ParseQuery.getQuery("Spot");
+                query.whereEqualTo("trip", trip);
+                query.whereEqualTo("regionId", cityId);
+                query.orderByAscending(Spot.KEY_DATE);
+                int finalI = i;
+                query.findInBackground(new FindCallback<Spot>() {
+                    @Override
+                    public void done(List<Spot> spots, ParseException e) {
+                        ArrayList<Spot> copy = new ArrayList<> ((ArrayList<Spot>) spots);
+                        allSpots.add(copy);
+                        if (finalI == finalAllSpotIds.size()-1) {
+                            new Thread(new Runnable() {
+                                public void run() {
+                                    for (ArrayList<Spot> city : allSpots) {
+                                        ArrayList<Place> placesInCity = new ArrayList<>();
+                                        for (Spot spot : city) {
+                                            final FetchPlaceRequest request = FetchPlaceRequest.newInstance(spot.getPlaceID(), placeFields);
+                                            placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                                                Place place = response.getPlace();
+                                                placesInCity.add(place);
+                                                startDetailsActivity(intent, tripParcelableObject, allPlaces,
+                                                        allSpots, trip);
+                                            }).addOnFailureListener((exception) -> {
+                                                if (exception instanceof ApiException) {
+                                                    final ApiException apiException = (ApiException) exception;
+                                                    Log.e(TAG, "Place not found: " + exception.getMessage());
+                                                } else {
+                                                    Log.e(TAG, "Other exception: " + exception.getMessage());
+                                                }
+                                            });
+                                        }
+                                        allPlaces.add(placesInCity);
+                                    }
+                                }
+                            }).start();
                         }
-                    });
-                }
-                // TODO debug: allPlaces is empty bc places API call doesn't work
-                allPlaces.add(placesInCity);
+                    }
+                });
             }
-            // TODO query spots outside a for loop, so all at once
-            for (ArrayList<String> city : allPlaceIds) {
-                ArrayList<Spot> spotsInCity = new ArrayList<>();
-                for (String id : city) {
-                    ParseQuery<Spot> query = ParseQuery.getQuery("Spot");
-                    query.whereEqualTo("trip", trip.getObjectId());
-                    query.whereEqualTo("placeId", id);
-                    query.findInBackground(new FindCallback<Spot>() {
-                        @Override
-                        public void done(List<Spot> spots, ParseException e) {
-                            spotsInCity.add(spots.get(0));
-                        }
-                    });
-                }
-                allSpots.add(spotsInCity);
-            }
+        }
+
+        private void startDetailsActivity(Intent intent, TripParcelableObject tripParcelableObject, ArrayList<ArrayList<Place>> allPlaces, ArrayList<ArrayList<Spot>> allSpots, Trip trip) {
             tripParcelableObject.setPlacesInParcel(allPlaces);
             tripParcelableObject.setSpotsInParcel(allSpots);
 
             intent.putExtra("tripObj", Parcels.wrap(tripParcelableObject));
             intent.putExtra("tripId", trip.getObjectId());
-
             intent.putExtra("trip", Parcels.wrap(trip));
+
             ((MainActivity)context).startActivity(intent);
         }
     }

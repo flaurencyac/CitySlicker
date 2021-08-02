@@ -19,17 +19,18 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
+        android:elevation="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/FrameLayout"
         android:layout_width="match_parent"
-        android:layout_height="589dp"
+        android:layout_height="572dp"
         android:layout_below="@+id/citiesSpinner"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="2dp">
 
     </FrameLayout>
 
@@ -46,4 +47,13 @@
         android:backgroundTint="@color/cityBlue"
         android:text="Finished!"
         android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/tvAddPlaces"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="7dp"
+        android:text="Add more places to trip " />
 </RelativeLayout>

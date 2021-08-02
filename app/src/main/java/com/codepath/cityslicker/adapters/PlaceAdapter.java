@@ -217,7 +217,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         }
 
         private void removeSpotFromTrip() {
-            ArrayList<ArrayList<String>> newPlacesList = Trip.parseForPlaces(trip.getPlaces());
+            ArrayList<ArrayList<String>> newPlacesList = Trip.parseForSpots(trip.getPlaces());
             for (int i = 0; i<newPlacesList.size(); i++) {
                 for (int j = 0; j<newPlacesList.get(i).size(); j++) {
                     if (newPlacesList.get(i).get(j).equals(spots.get(getAdapterPosition()).getPlaceID())) {
