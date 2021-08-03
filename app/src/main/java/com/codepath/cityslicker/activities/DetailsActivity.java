@@ -20,6 +20,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.cityslicker.MainActivity;
@@ -55,6 +56,7 @@ public class DetailsActivity extends AppCompatActivity {
     private KonfettiView konfettiView;
     private Drawable plane;
     private Shape.DrawableShape planeShape;
+    private TextView tvAddPlaces;
 
     private ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
     private ArrayList<ArrayList<String>> allPlaceIds = new ArrayList<ArrayList<String>>();
@@ -87,6 +89,7 @@ public class DetailsActivity extends AppCompatActivity {
         konfettiView = findViewById(R.id.viewKonfetti);
         citiesSpinner = findViewById(R.id.citiesSpinner);
         btnDone = findViewById(R.id.btnDone);
+        tvAddPlaces = findViewById(R.id.tvAddPlaces);
 
         arrayAdapter = new ArrayAdapter<>(context, R.layout.support_simple_spinner_dropdown_item, cityNames);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -127,6 +130,12 @@ public class DetailsActivity extends AppCompatActivity {
                 .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                 .streamFor(300, 3000L);
 
+        tvAddPlaces.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
     }
 
     private void selectFragment(Integer position) {

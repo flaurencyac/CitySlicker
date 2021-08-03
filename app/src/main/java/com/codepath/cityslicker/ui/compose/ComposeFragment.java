@@ -43,6 +43,9 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.parse.FunctionCallback;
+import com.parse.ParseClassName;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -58,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class ComposeFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "ComposeFragment";
@@ -102,6 +106,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private Integer foodPref;
     private Integer attractionsPref;
     private Integer shoppingPref;
+    private HashMap<String, ParseUser> userHashMap = new HashMap<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         composeViewModel = new ViewModelProvider(this).get(ComposeViewModel.class);
@@ -268,6 +273,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 for(ParseUser user : users) {
                     Log.i("User List ",(user.getUsername()));
                     usersList.add(user.getUsername());
+                    userHashMap.put(user.getUsername(), user);
                 }
             } else {
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -282,13 +288,29 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             Toast.makeText(getContext(), "This user does not exist!", Toast.LENGTH_LONG).show();
         }
         if (collaborators.contains(username)) {
-            actvCollaborators.setText("");
             Toast.makeText(getContext(), "Cannot add the same person!", Toast.LENGTH_SHORT).show();
         } else {
             collaborators.add(username);
             tvCollaborators.setText("Collaborators: "+ String.join(",", collaborators));
             actvCollaborators.setText("");
-            usersList.remove(username);
+        }
+    }
+
+    private void updateCollaborators(Trip trip) {
+        for (int i =0; i<collaborators.size()-1;i++) {
+            ParseUser user = userHashMap.get(collaborators.get(i));
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put("objectId", user.getObjectId());
+            params.put("newTrip", trip.getObjectId());
+            ParseCloud.callFunctionInBackground("editUserProperty", params, new FunctionCallback<Object>() {
+                public void done(Object result, ParseException e) {
+                    if (e == null) {
+                        Log.i(TAG, "Updated collaborator successfully");
+                    } else {
+                        Log.e(TAG, "Could not update collaborator", e);
+                    }
+                }
+            });
         }
     }
 
@@ -348,6 +370,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void done(ParseException e) {
                 if (e==null){
+                    updateCollaborators(trip);
                     Toast.makeText(getContext(), "Created Trip", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "Trip Created");
                     tripId = trip.getObjectId();
@@ -361,6 +384,13 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 }else{
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        currentUser.addUnique("trips", trip);
+        currentUser.saveInBackground(e-> {
+            if(e==null) {
+                Log.i(TAG, "Save trip to user's list of trips successful");
             }
         });
     }

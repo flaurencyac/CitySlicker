@@ -27,6 +27,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import org.jetbrains.annotations.NotNull;
@@ -76,7 +77,21 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
         }
 
         public void bind(Trip trip) {
-            tvTripTitle.setText(trip.getTripName());
+            ParseQuery<Trip> query = ParseQuery.getQuery("Trip");
+            query.include(Trip.KEY_PLACES);
+            query.include(Trip.KEY_CITY_NAMES);
+            query.include(Trip.KEY_REGIONS);
+            query.include(Trip.KEY_OWNER);
+            query.include(Trip.KEY_NAME);
+            query.include(Trip.KEY_BUDGET);
+            query.include(Trip.KEY_START_DATE);
+            query.include(Trip.KEY_END_DATE);
+            query.getInBackground(trip.getObjectId(), (object, e) -> {
+                if(e==null) {
+                    tvTripTitle.setText(object.getString("tripName"));
+                    trips.set(getAdapterPosition(), object);
+                }
+            });
             tvTripTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

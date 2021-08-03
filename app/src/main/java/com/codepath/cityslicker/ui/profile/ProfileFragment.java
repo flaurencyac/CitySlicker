@@ -43,11 +43,14 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
@@ -126,22 +129,24 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getAllTrips(FragmentManager fm) {
-        ParseQuery<Trip> query = ParseQuery.getQuery("Trip");
-        query.include(Trip.KEY_OWNER);
-        query.include(Trip.KEY_PLACES);
-        query.whereEqualTo(Trip.KEY_OWNER, ParseUser.getCurrentUser());
-        query.addDescendingOrder("createdAt");
-        query.findInBackground(new FindCallback<Trip>() {
-            @Override
-            public void done(List<Trip> objects, ParseException e) {
-                if (e == null) {
-                    trips.addAll(objects);
-                    getAllFriends(fm);
-                } else {
-                    Log.e(TAG, "Issue getting trips");
-                }
+        ArrayList<Trip> objects = (ArrayList<Trip>) ParseUser.getCurrentUser().get("trips");
+        if (objects != null) {
+            trips.addAll(objects);
+            Collections.reverse(trips);
+        }
+        if (ParseUser.getCurrentUser().get("sharedTrips") != null) {
+            ArrayList<String> tripIds = new ArrayList<String>();
+            tripIds = (ArrayList<String>) ParseUser.getCurrentUser().get("sharedTrips");
+            for (String id : tripIds) {
+                ParseQuery<Trip> query = ParseQuery.getQuery("Trip");
+                query.getInBackground(id, (object, e) -> {
+                    if (e == null) {
+                        trips.add(object);
+                    }
+                });
             }
-        });
+        }
+        getAllFriends(fm);
     }
 
     private void getAllFriends(FragmentManager fm) {
