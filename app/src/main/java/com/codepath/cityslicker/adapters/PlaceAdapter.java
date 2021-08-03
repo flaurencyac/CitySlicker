@@ -127,6 +127,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         private Integer mMonth;
         private Integer mDay;
         private Date selectedDate;
+        private TextView tvWebsiteLink;
 
         private Boolean firstDatePicker = true;
         private Boolean firstTimePicker = true;

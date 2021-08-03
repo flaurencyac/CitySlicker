@@ -69,10 +69,6 @@ public class LoginActivity extends AppCompatActivity {
         ivGlobe  = findViewById(R.id.ivGlobe);
         konfettiView = findViewById(R.id.viewKonfetti);
 
-        //RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        //rotate.setDuration(1000000);
-        //rotate.setInterpolator(new LinearInterpolator());
-
         Animation aniRotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clockwise);
         ivGlobe.startAnimation(aniRotate);
 
@@ -143,8 +139,6 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e(TAG, "Issue with login"+e, e);
                     Toast.makeText(LoginActivity.this, "Unable to log in", Toast.LENGTH_SHORT).show();
                 } else {
-
-
                     goMainActivity();
                 }
             }

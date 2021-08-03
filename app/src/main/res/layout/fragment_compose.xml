@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/actvCollaborators"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="7dp"
         android:layout_marginTop="0dp"
         android:textColor="@color/cityBlue"
         tools:text="Collaborators:" />
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/autocomplete_fragment"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="7dp"
         android:layout_marginTop="5dp"
         android:text="Cities: "
         android:textColor="@color/cityBlue"
@@ -466,5 +466,4 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="371dp"
         android:text="Preferred:     Least                      Most" />
-
 </RelativeLayout>
