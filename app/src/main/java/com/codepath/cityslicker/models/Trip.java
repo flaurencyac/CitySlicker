@@ -30,6 +30,8 @@ public class Trip extends ParseObject {
     private static final String FAMILY_PREFERENCE = "familyPref";
     private static final String ATTRACTIONS_PREFERENCE = "attractionsPref";
 
+    public ArrayList<String> getCollaborators() {return (ArrayList<String>) get(KEY_COLLABORATORS); }
+
     public void setPlaces(JSONArray allPlaces) { put(KEY_PLACES, allPlaces); }
 
     public ArrayList<String> getPlaces() {return (ArrayList<String>) get(KEY_PLACES); }

@@ -56,13 +56,16 @@ public class DetailsActivity extends AppCompatActivity {
     private KonfettiView konfettiView;
     private Drawable plane;
     private Shape.DrawableShape planeShape;
-    private TextView tvAddPlaces;
+    private Button btnAddPlaces;
+    private TextView tvTripTitle;
+    private TextView tvCollaborators;
 
     private ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
     private ArrayList<ArrayList<String>> allPlaceIds = new ArrayList<ArrayList<String>>();
     private ArrayList<ArrayList<Spot>> allSpots = new ArrayList<ArrayList<Spot>>();
     private ArrayList<String> cityIds = new ArrayList<>();
     private ArrayList<String> cityNames = new ArrayList<>();
+    private ArrayList<String> collaborators = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter;
     private FragmentAdapter fragmentAdapter;
     private FragmentManager fragmentManager;
@@ -89,7 +92,9 @@ public class DetailsActivity extends AppCompatActivity {
         konfettiView = findViewById(R.id.viewKonfetti);
         citiesSpinner = findViewById(R.id.citiesSpinner);
         btnDone = findViewById(R.id.btnDone);
-        tvAddPlaces = findViewById(R.id.tvAddPlaces);
+        btnAddPlaces = findViewById(R.id.btnAddPlaces);
+        tvTripTitle = findViewById(R.id.tvTripTitle);
+        tvCollaborators = findViewById(R.id.tvCollaborators);
 
         arrayAdapter = new ArrayAdapter<>(context, R.layout.support_simple_spinner_dropdown_item, cityNames);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -130,12 +135,16 @@ public class DetailsActivity extends AppCompatActivity {
                 .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                 .streamFor(300, 3000L);
 
-        tvAddPlaces.setOnClickListener(new View.OnClickListener() {
+        btnAddPlaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 
             }
         });
+        tvTripTitle.setText(trip.getTripName());
+        collaborators = trip.getCollaborators();
+        String collaboratorsString = collaborators.toString();
+        tvCollaborators.setText("Collaborators: "+collaboratorsString.substring(1,collaboratorsString.length()-1));
     }
 
     private void selectFragment(Integer position) {

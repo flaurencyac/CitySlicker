@@ -70,10 +70,12 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvTripTitle;
+        TextView tvNumCollaborators;
 
         public ViewHolder (View itemView) {
             super(itemView);
             tvTripTitle = itemView.findViewById(R.id.tvFriendName);
+            tvNumCollaborators = itemView.findViewById(R.id.tvNumCollaborators);
         }
 
         public void bind(Trip trip) {
@@ -89,6 +91,11 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
             query.getInBackground(trip.getObjectId(), (object, e) -> {
                 if(e==null) {
                     tvTripTitle.setText(object.getString("tripName"));
+                    if (object.getCollaborators()!= null) {
+                        tvNumCollaborators.setText(""+object.getCollaborators().size());
+                    } else {
+                        tvNumCollaborators.setText("0");
+                    }
                     trips.set(getAdapterPosition(), object);
                 }
             });

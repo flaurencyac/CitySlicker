@@ -15,19 +15,50 @@
         app:cardCornerRadius="15dp"
         app:cardElevation="15dp">
 
-        <TextView
-            android:id="@+id/tvFriendName"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:background="#5984C6FA"
-            android:padding="15dp"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="25sp"
-            tools:text="Fall Break 2021" />
-    </androidx.cardview.widget.CardView>
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:id="@+id/tvFriendName"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:background="#59FFFFFF"
+                android:padding="15dp"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                tools:text="Fall Break 2021" />
+
+            <ImageView
+                android:id="@+id/imageView13"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentBottom="false"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toEndOf="@+id/tvFriendName"
+                app:srcCompat="@drawable/ic_baseline_person_24" />
+
+            <TextView
+                android:id="@+id/tvNumCollaborators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="-5dp"
+                android:layout_marginTop="7dp"
+                android:layout_toEndOf="@+id/imageView13"
+                android:textColor="@color/cityBlue"
+                tools:text="2" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
