@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="25dp"
-    android:padding="10dp">
+    android:elevation="0dp"
+    android:padding="2dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:padding="5dp"
         app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="15dp"
-        app:cardElevation="15dp">
+        app:cardElevation="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,7 +21,7 @@
 
             <TextView
                 android:id="@+id/tvFriendName"
-                android:layout_width="320dp"
+                android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
@@ -35,13 +35,13 @@
 
             <ImageView
                 android:id="@+id/imageView13"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentBottom="false"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="0dp"
                 android:layout_toEndOf="@+id/tvFriendName"
                 app:srcCompat="@drawable/ic_baseline_person_24" />

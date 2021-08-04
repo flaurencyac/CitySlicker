@@ -39,7 +39,7 @@ import tyrantgit.explosionfield.ExplosionField;
 
 public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.ViewHolder>{
     private static final String TAG = "RecommendedAdapter";
-    private final List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
+    private final List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
             Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.PHOTO_METADATAS);
 
     private PlacesClient placesClient;
@@ -110,6 +110,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         }
 
         public void bind(RecommendedPlace recommendedPlace) {
+            tvOpeningHours.setText("Open now: "+recommendedPlace.getOpen());
             explosionField = ExplosionField.attach2Window((MapsActivity) context);
             btnAddToTrip.setOnClickListener(new View.OnClickListener() {
                 @Override

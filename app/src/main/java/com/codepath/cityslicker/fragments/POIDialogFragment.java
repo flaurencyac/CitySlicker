@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -49,6 +50,7 @@ public class POIDialogFragment extends DialogFragment {
     private final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.RATING,
             Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
 
+    private Context context;
     private TextView tvPlaceName;
     private TextView tvRating;
     private TextView tvNumRatings;
@@ -98,6 +100,7 @@ public class POIDialogFragment extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         YoYo.with(Techniques.FadeIn).duration(500).playOn(getView());
+        context=getContext();
         tvPlaceName = view.findViewById(R.id.tvPlaceName);
         tvRating = view.findViewById(R.id.tvRating);
         tvAddress = view.findViewById(R.id.tvAddress);
@@ -111,14 +114,14 @@ public class POIDialogFragment extends DialogFragment {
         ibClose = view.findViewById(R.id.ibClose);
         tvPrice = view.findViewById(R.id.tvPrice);
 
-        PlaceParcelableObject placeParcelableObject = (PlaceParcelableObject) getArguments().getParcelable("place");
-        Places.initialize(getContext(), BuildConfig.MAPS_API_KEY);
-        PlacesClient placesClient = Places.createClient(getContext());
+        PlaceParcelableObject placeParcelableObject = (PlaceParcelableObject) getArguments().getParcelable(PLACE);
+        Places.initialize(context, BuildConfig.MAPS_API_KEY);
+        PlacesClient placesClient = Places.createClient(context);
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeParcelableObject.getId(), placeFields);
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
-            Utilities.fetchPhoto(getContext(), place.getPhotoMetadatas(), ivPhoto, TAG);
-            Utilities.setDialogViews(getContext(), place, tvPlaceName, tvAddress, tvPrice, tvPhoneNumber, tvRating, tvNumRatings, tvWebsiteLink, tvOpeningHours, ratingBar);
+            Utilities.fetchPhoto(context, place.getPhotoMetadatas(), ivPhoto, TAG);
+            Utilities.setDialogViews(context, place, tvPlaceName, tvAddress, tvPrice, tvPhoneNumber, tvRating, tvNumRatings, tvWebsiteLink, tvOpeningHours, ratingBar);
         });
         ibClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +133,7 @@ public class POIDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 // TODO: pass the place/poi as a parcel and init the list of trips screen
-                // TODO : Intent intent = new Intent(getContext(), AllTrips.class);
+                // TODO : Intent intent = new Intent(context, AllTrips.class);
                 // TODO : intent.putExtra("place", placeParcelableObject);
                 // TODO:  Create/save the parse place object add it to the trip once the user selects a trip
                 // TODO : go to edit trip details screen and see the new place

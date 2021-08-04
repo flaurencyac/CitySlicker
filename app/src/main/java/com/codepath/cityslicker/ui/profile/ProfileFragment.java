@@ -161,14 +161,14 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    public void onPickPhoto(View view) {
+    private void onPickPhoto(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivityForResult(intent, PICK_PHOTO_CODE);
         }
     }
 
-    public Bitmap loadFromUri(Uri photoUri) {
+    private Bitmap loadFromUri(Uri photoUri) {
         Bitmap image = null;
         try {
             if(Build.VERSION.SDK_INT > 27){

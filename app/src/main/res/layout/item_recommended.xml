@@ -29,140 +29,164 @@
             android:id="@+id/tvPlaceName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/ivPhoto"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="false"
             android:layout_marginStart="1dp"
             android:layout_marginTop="4dp"
             android:autoSizeMaxTextSize="30sp"
-            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMinTextSize="8sp"
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="18sp"
             tools:text="The Metropolitan Museum of Art" />
 
-    <TextView
-        android:id="@+id/tvRating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivPhoto"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="5dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/black"
-        tools:text="2.0" />
+        <TextView
+            android:id="@+id/tvRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvPlaceName"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="5dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/black"
+            tools:text="2.0" />
 
-    <RatingBar
-        android:id="@+id/ratingBar"
-        style="@style/Widget.AppCompat.RatingBar.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivPhoto"
-        android:layout_centerHorizontal="false"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="5dp"
-        android:layout_toEndOf="@+id/tvRating"
-        android:progressTint="#FFC615"
-        android:stepSize="0.25" />
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvPlaceName"
+            android:layout_centerHorizontal="false"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="6dp"
+            android:layout_toEndOf="@+id/tvRating"
+            android:progressTint="#FFC615"
+            android:stepSize="0.25" />
 
-    <TextView
-        android:id="@+id/tvNumRatings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivPhoto"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="4dp"
-        android:layout_toEndOf="@+id/ratingBar"
-        android:fontFamily="sans-serif-thin"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        tools:text="(1111111)" />
+        <TextView
+            android:id="@+id/tvNumRatings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvPlaceName"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/ratingBar"
+            android:fontFamily="sans-serif-thin"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="(1111111)" />
 
-    <TextView
-        android:id="@+id/tvWebsiteLink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ratingBar"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="7dp"
-        android:autoLink="all"
-        android:linksClickable="true"
-        tools:text="website url" />
+        <TextView
+            android:id="@+id/tvWebsiteLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ratingBar"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="5dp"
+            android:autoLink="all"
+            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:linksClickable="true"
+            tools:text="website url" />
 
-    <TextView
-        android:id="@+id/tvAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvWebsiteLink"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="7dp"
-        tools:text="formatted_address" />
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvWebsiteLink"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="5dp"
+            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="formatted_address" />
 
-    <TextView
-        android:id="@+id/tvPhoneNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAddress"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="7dp"
-        tools:text="(123) 456-7899" />
+        <TextView
+            android:id="@+id/tvPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvAddress"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="5dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="(012) 345-6789" />
 
-    <ImageView
-        android:id="@+id/ivPhoto"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_below="@+id/tvPlaceName"
-        android:layout_alignParentBottom="false"
-        android:layout_marginTop="0dp"
-        android:scaleType="centerCrop"
-        tools:src="@tools:sample/avatars" />
+        <ImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="false"
+            android:layout_marginEnd="0dp"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/tvOpeningHours"
-        android:layout_width="181dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvPhoneNumber"
-        android:layout_alignStart="@+id/tvPhoneNumber"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="false"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="7dp"
-        tools:text="Open now: yes" />
+        <TextView
+            android:id="@+id/tvOpeningHours"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvPhoneNumber"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentBottom="false"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="5dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="Open now: yes" />
 
         <Button
             android:id="@+id/btnAddToTrip"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvOpeningHours"
             android:layout_alignParentEnd="false"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="2dp"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="2dp"
             android:backgroundTint="@color/cityBlue"
             android:text="Add to Trip"
             android:textColor="#FFFFFF" />
 
-    <TextView
-        android:id="@+id/tvPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivPhoto"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="false"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="0dp"
-        android:textColor="@color/black"
-        tools:text="$$$" />
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvPlaceName"
+            android:layout_alignParentBottom="false"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toEndOf="@+id/tvNumRatings"
+            android:textColor="@color/black"
+            tools:text="$$$" />
 
         </RelativeLayout>
 

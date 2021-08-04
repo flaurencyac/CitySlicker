@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -42,6 +43,7 @@ public class AddToTripDialogFragment extends DialogFragment {
     private final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
             Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
 
+    private Context context;
     private TextView tvPlaceName;
     private TextView tvRating;
     private TextView tvNumRatings;
@@ -100,6 +102,7 @@ public class AddToTripDialogFragment extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         YoYo.with(Techniques.FadeIn).duration(500).playOn(getView());
+        context = getContext();
         tvPlaceName = view.findViewById(R.id.tvPlaceName);
         tvRating = view.findViewById(R.id.tvRating);
         tvAddress = view.findViewById(R.id.tvAddress);
@@ -129,17 +132,17 @@ public class AddToTripDialogFragment extends DialogFragment {
             }
         });
 
-        PlaceParcelableObject placeParcelableObject = (PlaceParcelableObject) getArguments().getParcelable("place");
-        Places.initialize(getContext(), BuildConfig.MAPS_API_KEY);
-        placesClient = Places.createClient(getContext());
+        PlaceParcelableObject placeParcelableObject = (PlaceParcelableObject) getArguments().getParcelable(PARCEL_NAME);
+        Places.initialize(context, BuildConfig.MAPS_API_KEY);
+        placesClient = Places.createClient(context);
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeParcelableObject.getId(), placeFields);
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
             mPlace = place;
             placeId = place.getId();
             placeName = place.getName();
-            Utilities.setDialogViews(getContext(), mPlace, tvPlaceName, tvAddress, tvPrice, tvPhoneNumber, tvRating, tvNumRatings, tvWebsiteLink, tvOpeningHours, ratingBar);
-            Utilities.fetchPhoto(getContext(), place.getPhotoMetadatas(), ivPhoto, TAG);
+            Utilities.setDialogViews(context, mPlace, tvPlaceName, tvAddress, tvPrice, tvPhoneNumber, tvRating, tvNumRatings, tvWebsiteLink, tvOpeningHours, ratingBar);
+            Utilities.fetchPhoto(context, place.getPhotoMetadatas(), ivPhoto, TAG);
         });
     }
 

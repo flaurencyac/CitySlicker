@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:background="@drawable/gradient_profile"
     tools:context=".ui.profile.ProfileFragment">
 
     <com.google.android.material.tabs.TabLayout
@@ -19,9 +20,9 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
-        app:tabTextColor="@color/colorPrimary"
         app:tabBackground="@color/white"
-        app:tabIndicatorColor="@color/colorPrimary" >
+        app:tabIndicatorColor="@color/colorPrimary"
+        app:tabTextColor="@color/colorPrimary">
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -34,20 +35,21 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginTop="2dp"
-        android:layout_marginBottom="0dp">
+        android:layout_marginBottom="0dp"
+        android:background="#FFFFFF">
 
 
     </androidx.viewpager2.widget.ViewPager2>
 
     <ImageView
         android:id="@+id/ivProfilePicture"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_below="@+id/tvUsername"
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="134dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="122dp"
         android:scaleType="centerCrop"
         tools:src="@drawable/ic_baseline_account_circle_24" />
 
@@ -58,13 +60,14 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="135dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="137dp"
         android:layout_marginBottom="0dp"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif-light"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display4"
         android:textColor="@color/black"
+        android:textSize="20sp"
         tools:text="flaurencya" />
 
     <TextView
@@ -72,8 +75,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivProfilePicture"
+        android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="139dp"
         android:text="Update Profile Picture"
         android:textSize="12sp" />
 
