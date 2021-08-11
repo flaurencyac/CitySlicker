@@ -179,8 +179,8 @@ public class Utilities {
                 Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        ArrayList<Place> placesInCity = new ArrayList<>();
         executor.submit(() -> {
+            ArrayList<Place> placesInCity = new ArrayList<>();
             for (int j = 0; j < spotsInCity.size(); j++) {
                 final FetchPlaceRequest request = FetchPlaceRequest.newInstance(spotsInCity.get(j).getPlaceID(), placeFields);
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
