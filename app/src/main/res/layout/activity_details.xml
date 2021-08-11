@@ -89,7 +89,7 @@
         android:layout_marginStart="7dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="0dp"
-        android:text="TextView"
+        android:text="Collaborators:"
         android:textColor="@color/black"
         tools:text="Collaborators:" />
 </RelativeLayout>

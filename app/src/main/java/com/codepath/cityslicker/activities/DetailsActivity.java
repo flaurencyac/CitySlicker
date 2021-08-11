@@ -138,13 +138,20 @@ public class DetailsActivity extends AppCompatActivity {
         btnAddPlaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                Intent intent = new Intent(context, AddPlacesActivity.class);
+                intent.putExtra("tripId", trip.getObjectId());
+                TripParcelableObject parcel = new TripParcelableObject();
+                parcel.setTrip(trip);
+                intent.putExtra("tripObj", Parcels.wrap(parcel));
+                startActivity(intent);
             }
         });
         tvTripTitle.setText(trip.getTripName());
         collaborators = trip.getCollaborators();
-        String collaboratorsString = collaborators.toString();
-        tvCollaborators.setText("Collaborators: "+collaboratorsString.substring(1,collaboratorsString.length()-1));
+        if (collaborators != null) {
+            String collaboratorsString = collaborators.toString();
+            tvCollaborators.setText("Collaborators: "+collaboratorsString.substring(1,collaboratorsString.length()));
+        }
     }
 
     private void selectFragment(Integer position) {

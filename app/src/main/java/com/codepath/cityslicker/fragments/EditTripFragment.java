@@ -39,6 +39,7 @@ public class EditTripFragment extends Fragment {
     private ArrayList<Spot> spots = new ArrayList<Spot>();
     private Trip trip;
 
+    public EditTripFragment() {}
 
     public EditTripFragment(Context context, ArrayList<Place> placesInCity, ArrayList<Spot> spots, String tripId, Trip trip) {
         this.context = context;

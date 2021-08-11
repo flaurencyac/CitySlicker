@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.Utilities;
+import com.codepath.cityslicker.activities.AddPlacesActivity;
 import com.codepath.cityslicker.activities.MapsActivity;
 import com.codepath.cityslicker.models.RecommendedPlace;
 import com.codepath.cityslicker.models.Spot;
@@ -111,7 +112,11 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
 
         public void bind(RecommendedPlace recommendedPlace) {
             tvOpeningHours.setText("Open now: "+recommendedPlace.getOpen());
-            explosionField = ExplosionField.attach2Window((MapsActivity) context);
+            try {
+                explosionField = ExplosionField.attach2Window((MapsActivity) context);
+            } catch (Exception e) {
+                explosionField = ExplosionField.attach2Window((AddPlacesActivity) context);
+            }
             btnAddToTrip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

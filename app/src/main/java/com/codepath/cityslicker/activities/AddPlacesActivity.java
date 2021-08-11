@@ -21,7 +21,9 @@ import android.widget.Toast;
 import com.codepath.cityslicker.BuildConfig;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.TripParcelableObject;
+import com.codepath.cityslicker.Utilities;
 import com.codepath.cityslicker.adapters.RecommendedAdapter;
+import com.codepath.cityslicker.adapters.TripsAdapter;
 import com.codepath.cityslicker.fragments.AddToTripDialogFragment;
 import com.codepath.cityslicker.models.RecommendedPlace;
 import com.codepath.cityslicker.models.Spot;
@@ -72,11 +74,11 @@ import java.util.List;
 
 import nl.dionsegijn.konfetti.KonfettiView;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AddToTripDialogFragment.AddToTripPOIDialogFragmentListener,
+public class AddPlacesActivity extends AppCompatActivity implements OnMapReadyCallback, AddToTripDialogFragment.AddToTripPOIDialogFragmentListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, RecommendedAdapter.RecommendedSpotListener {
 
     public static final Integer NUMBEROFCOLUMNS = 2;
-    private static final String TAG = "MapsActivity";
+    private static final String TAG = "AddPlacesActivity";
     private static final String TYPE_FOOD = "restaurant";
     private static final String KEYWORD_FAMILY = "kids";
     private static final String TYPE_FAMILY = "tourist_attractions";
@@ -132,7 +134,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        this.context = MapsActivity.this;
+        this.context = AddPlacesActivity.this;
         btnNext = findViewById(R.id.btnNext);
         rvRecommended = findViewById(R.id.rvRecommended);
         ibLowerBottomSheet = findViewById(R.id.ibLowerBottomSheet);
@@ -238,7 +240,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         AddToTripDialogFragment addToTripPOIDialogFragment = AddToTripDialogFragment.newInstance(place);
         addToTripPOIDialogFragment.show(fm, "dialog_fragment_add_to_trip_poi");
     }
-
 
     private void getRecommendedPlaces(){
         if (adultPref != 0) {
@@ -347,7 +348,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         @Override
                         public void run() {
                             allRecommendedPlaces = RecommendedPlace.sortRecommendedPlaces(allRecommendedPlaces);
-                            adapter = new RecommendedAdapter(context, allRecommendedPlaces, MapsActivity.this);
+                            adapter = new RecommendedAdapter(context, allRecommendedPlaces, AddPlacesActivity.this);
                             rvRecommended.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         }
@@ -373,37 +374,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         placesInCurrentCity.clear();
         placesIdsCurrentCity.clear();
         allRecommendedPlaces.clear();
-    }
-
-    private void updateTripWithAllPlaces() {
-        allPlaces.add(placesInCurrentCity);
-        allPlaceIds.add(placesIdsCurrentCity);
-        allSpots.add(spotsInCurrentCity);
-        allSpotIds.add(spotIds.toString());
-        ParseQuery<Trip> query  = ParseQuery.getQuery("Trip");
-        query.include(Trip.KEY_PLACES);
-        query.getInBackground(tripId, (object, e) -> {
-            object.setPlaces(new JSONArray(allSpotIds));
-            object.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    Toast.makeText(context, "Saved Trip!", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(context, DetailsActivity.class);
-                    intent.putExtra("tripId", tripId);
-                    TripParcelableObject parcel = new TripParcelableObject();
-                    parcel.setTrip(object);
-                    parcel.setSpotsInParcel(allSpots);
-                    parcel.setPlacesInParcel(allPlaces);
-                    intent.putExtra("tripObj", Parcels.wrap(parcel));
-                    intent.putStringArrayListExtra("cityNames", cityNames);
-                    intent.putStringArrayListExtra("cityIdList", cityIdList);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("allPlaceIds", allPlaceIds);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-            });
-        });
     }
 
     public void onFinishAddToTripPOIDialogFragment(Boolean addToTrip, String placeId, String placeName, Place place) {
@@ -475,5 +445,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }});
         placesIdsCurrentCity.add(recommendedPlace.getPlaceId());
         spotsInCurrentCity.add(spot);
+    }
+
+
+    private void updateTripWithAllPlaces() {
+        allPlaces.add(placesInCurrentCity);
+        allPlaceIds.add(placesIdsCurrentCity);
+        allSpots.add(spotsInCurrentCity);
+        allSpotIds.add(spotIds.toString());
+
+        ParseQuery<Trip> query  = ParseQuery.getQuery("Trip");
+        query.include(Trip.KEY_PLACES);
+        query.include(Trip.KEY_CITY_NAMES);
+        query.include(Trip.KEY_REGIONS);
+        query.include(Trip.KEY_OWNER);
+        query.include(Trip.KEY_NAME);
+        query.include(Trip.KEY_BUDGET);
+        query.include(Trip.KEY_START_DATE);
+        query.include(Trip.KEY_END_DATE);
+        query.getInBackground(tripId, (object, e) -> {
+            ArrayList<ArrayList<String>> oldSpotIds = new ArrayList<>();
+            oldSpotIds = Trip.parseForSpots(object.getPlaces());
+            ArrayList<ArrayList<String>> newSpotIds = new ArrayList<>();
+            newSpotIds = Trip.parseForSpots(allSpotIds);
+            for (int i = 0; i < oldSpotIds.size(); i++) {
+                oldSpotIds.get(i).addAll(newSpotIds.get(i));
+            }
+            object.setPlaces(new JSONArray(Trip.makeOneDimensional(oldSpotIds)));
+            object.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Utilities.openTripDetails(trip, context, TAG);
+                }
+            });
+        });
     }
 }

@@ -34,6 +34,8 @@ public class Trip extends ParseObject {
 
     public void setPlaces(JSONArray allPlaces) { put(KEY_PLACES, allPlaces); }
 
+    public ArrayList<ArrayList<String>> getPlacesList() {return (ArrayList<ArrayList<String>>) get(KEY_PLACES); }
+
     public ArrayList<String> getPlaces() {return (ArrayList<String>) get(KEY_PLACES); }
 
     public ArrayList<String> getRegions() {return (ArrayList<String>) get(KEY_REGIONS);}
@@ -94,5 +96,13 @@ public class Trip extends ParseObject {
             placeIds.add(temp);
         }
         return placeIds;
+    }
+
+    public static ArrayList<String> makeOneDimensional(ArrayList<ArrayList<String>> twoDimenLst) {
+            ArrayList<String> oneDimenLst = new ArrayList<>();
+            for (ArrayList<String> item : twoDimenLst) {
+                oneDimenLst.add(item.toString());
+            }
+            return oneDimenLst;
     }
 }

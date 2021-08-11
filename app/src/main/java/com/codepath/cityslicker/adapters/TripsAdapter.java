@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.codepath.cityslicker.MainActivity;
 import com.codepath.cityslicker.R;
 import com.codepath.cityslicker.TripParcelableObject;
+import com.codepath.cityslicker.Utilities;
 import com.codepath.cityslicker.activities.DetailsActivity;
 import com.codepath.cityslicker.activities.MapsActivity;
 import com.codepath.cityslicker.models.RecommendedPlace;
@@ -38,8 +39,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> {
-    private final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.RATING,
-            Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.USER_RATINGS_TOTAL, Place.Field.PRICE_LEVEL, Place.Field.TYPES, Place.Field.OPENING_HOURS, Place.Field.PHOTO_METADATAS);
     private static final String TAG = "TripsAdapter";
     Context context;
     List<Trip> trips;
@@ -102,84 +101,9 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ViewHolder> 
             tvTripTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openTripDetails(trips.get(getAdapterPosition()));
+                    Utilities.openTripDetails(trips.get(getAdapterPosition()), context, TAG);
                 }
             });
-        }
-
-        public void openTripDetails(Trip trip) {
-            PlacesClient placesClient = Places.createClient(context);
-            ArrayList<ArrayList<Place>> allPlaces = new ArrayList<ArrayList<Place>>();
-            ArrayList<ArrayList<String>> allSpotIds = new ArrayList<ArrayList<String>>();
-            ArrayList<ArrayList<Spot>> allSpots = new ArrayList<ArrayList<Spot>>();
-            ArrayList<String> cityIds = new ArrayList<>();
-            ArrayList<String> cityNames = new ArrayList<>();
-
-            Intent intent = new Intent(context, DetailsActivity.class);
-            TripParcelableObject tripParcelableObject = new TripParcelableObject();
-            tripParcelableObject.setTrip(trip);
-
-            allSpotIds = Trip.parseForSpots(trip.getPlaces());
-            intent.putExtra("allPlaceIds", allSpotIds);
-
-            cityIds = trip.getRegions();
-            intent.putExtra("cityIdList", cityIds);
-            cityNames = trip.getCityNames();
-            intent.putExtra("cityNames", cityNames);
-
-            ArrayList<ArrayList<String>> finalAllSpotIds = allSpotIds;
-            for (int i = 0; i < cityIds.size() ; i ++) {
-                String cityId = cityIds.get(i);
-                ParseQuery<Spot> query = ParseQuery.getQuery("Spot");
-                query.whereEqualTo("trip", trip);
-                query.whereEqualTo("regionId", cityId);
-                query.orderByAscending(Spot.KEY_DATE);
-                int finalI = i;
-                query.findInBackground(new FindCallback<Spot>() {
-                    @Override
-                    public void done(List<Spot> spots, ParseException e) {
-                        ArrayList<Spot> copy = new ArrayList<> ((ArrayList<Spot>) spots);
-                        allSpots.add(copy);
-                        if (finalI == finalAllSpotIds.size()-1) {
-                            new Thread(new Runnable() {
-                                public void run() {
-                                    for (ArrayList<Spot> city : allSpots) {
-                                        ArrayList<Place> placesInCity = new ArrayList<>();
-                                        for (Spot spot : city) {
-                                            final FetchPlaceRequest request = FetchPlaceRequest.newInstance(spot.getPlaceID(), placeFields);
-                                            placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                                                Place place = response.getPlace();
-                                                placesInCity.add(place);
-                                                startDetailsActivity(intent, tripParcelableObject, allPlaces,
-                                                        allSpots, trip);
-                                            }).addOnFailureListener((exception) -> {
-                                                if (exception instanceof ApiException) {
-                                                    final ApiException apiException = (ApiException) exception;
-                                                    Log.e(TAG, "Place not found: " + exception.getMessage());
-                                                } else {
-                                                    Log.e(TAG, "Other exception: " + exception.getMessage());
-                                                }
-                                            });
-                                        }
-                                        allPlaces.add(placesInCity);
-                                    }
-                                }
-                            }).start();
-                        }
-                    }
-                });
-            }
-        }
-
-        private void startDetailsActivity(Intent intent, TripParcelableObject tripParcelableObject, ArrayList<ArrayList<Place>> allPlaces, ArrayList<ArrayList<Spot>> allSpots, Trip trip) {
-            tripParcelableObject.setPlacesInParcel(allPlaces);
-            tripParcelableObject.setSpotsInParcel(allSpots);
-
-            intent.putExtra("tripObj", Parcels.wrap(tripParcelableObject));
-            intent.putExtra("tripId", trip.getObjectId());
-            intent.putExtra("trip", Parcels.wrap(trip));
-
-            ((MainActivity)context).startActivity(intent);
         }
     }
 }
